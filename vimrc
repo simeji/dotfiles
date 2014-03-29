@@ -458,6 +458,7 @@ Bundle 'unite-font'
 Bundle 'unite-colorscheme'
 Bundle 'neocomplcache'
 Bundle 'surround.vim'
+Bundle 'jimsei/winresizer'
 Bundle 'git://github.com/pasela/unite-webcolorname.git'
 Bundle 'git://github.com/thinca/vim-quickrun.git'
 Bundle 'git://github.com/Shougo/neosnippet.git'
@@ -465,10 +466,9 @@ Bundle 'git://github.com/pangloss/vim-javascript.git'
 Bundle 'git://github.com/briancollins/vim-jst.git'
 Bundle 'git://github.com/scrooloose/nerdcommenter.git'
 Bundle 'git://github.com/scrooloose/nerdtree.git'
-Bundle 'tpope/vim-fugitive'
+"Bundle 'tpope/vim-fugitive'
 "Bundle 'bling/vim-airline'
-" Bundle 'git://github.com/scrooloose/syntastic.git'
-"Bundle 'gitopel.vim'
+"Bundle 'git://github.com/scrooloose/syntastic.git'
 
 "
 " original repos on github
@@ -481,7 +481,6 @@ Bundle 'tpope/vim-fugitive'
 "Bundle 'rails.vim'
 " non github repos
 "Bundle 'git://git.wincent.com/command-t.git'
-" ...
 
 filetype plugin indent on 
 
