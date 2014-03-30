@@ -103,7 +103,8 @@ match ZenkakuSpace /　/
 colorscheme BlackSea
 
 " ステータスラインに表示する情報の指定
-set statusline=%n\:%y%F\ \|%{fugitive#statusline()}%{(&fenc!=''?&fenc:&enc).'\|'.&ff.'\|'}%m%r%=
+"set statusline=%n\:%y%F\ \|%{fugitive#statusline()}%{(&fenc!=''?&fenc:&enc).'\|'.&ff.'\|'}%m%r%=
+set statusline=%n\:%y%F\ \|%{(&fenc!=''?&fenc:&enc).'\|'.&ff.'\|'}%m%r%=
 " ステータスラインの色
 "highlight StatusLine guifg=darkblue guibg=darkyellow gui=none ctermfg=blue ctermbg=yellow cterm=none
 highlight statusline   term=NONE cterm=NONE guifg=red ctermfg=yellow ctermbg=red
@@ -451,7 +452,6 @@ Bundle 'gmarik/vundle'
 
 " My Bundles here:
 Bundle 'unite.vim'
-Bundle 'unite-yarm'
 Bundle 'unite-gem'
 Bundle 'unite-locate'
 Bundle 'unite-font'
@@ -462,6 +462,7 @@ Bundle 'jimsei/winresizer'
 Bundle 'git://github.com/pasela/unite-webcolorname.git'
 Bundle 'git://github.com/thinca/vim-quickrun.git'
 Bundle 'git://github.com/Shougo/neosnippet.git'
+Bundle 'git://github.com/Shougo/neosnippet-snippets.git'
 Bundle 'git://github.com/pangloss/vim-javascript.git'
 Bundle 'git://github.com/briancollins/vim-jst.git'
 Bundle 'git://github.com/scrooloose/nerdcommenter.git'
