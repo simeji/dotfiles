@@ -485,7 +485,7 @@ NeoBundleLazy 'Shougo/vimshell.vim', {
       \ 'VimShellTerminal', 'VimShellPop'],
       \ 'mappings' : '<Plug>(vimshell_'
       \ }
-NeoBundle 'kana/vim-operator-ser', {
+NeoBundle 'kana/vim-operator-user', {
       \ 'functions' : 'operator#user#define',
       \ }
 NeoBundleLazy 'kana/vim-operator-replace', {
