@@ -42,8 +42,8 @@ dotfiles() {
 
 vimenv() {
   which git || yum install git -y
-  test -d ~/.vim/bundle/vundle || git clone https://github.com/gmarik/vundle.git ~/.vim/bundle/vundle
-  vim ~/.vimrc -c BundleInstall
+  test -d ~/.vim/bundle/vundle || git clone https://github.com/Shougo/neobundle.vim ~/.vim/bundle/neobundle.vim
+  vim ~/.vimrc -c NeoBundleInstall
 }
 
 case "$1" in
