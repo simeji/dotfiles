@@ -32,9 +32,9 @@ set shortmess+=I
 " start   : 挿入モード開始位置より手前の文字
 set backspace=indent,eol,start
 
-" high light current line 
-au WinLeave * set nocursorline 
-au WinEnter * set cursorline 
+" high light current line
+au WinLeave * set nocursorline
+au WinEnter * set cursorline
 set cursorline "cursorcolumn
 " }}}
 
@@ -260,7 +260,7 @@ au Filetype smarty exec('set dictionary=$HOME/.vim/syntax/smarty.vim')
 au Filetype smarty set complete+=k
 
 "rspec シンタックスの設定
-au BufRead,BufNewFile *_spec.rb set filetype=ruby.rspec 
+au BufRead,BufNewFile *_spec.rb set filetype=ruby.rspec
 au Filetype ruby exec('set dictionary=$HOME/.vim/syntax/rspec.vim')
 
 "jstest シンタックスの設定
@@ -276,11 +276,6 @@ let g:NERDCustomDelimiters = {'jst': { 'left': '<!-- ', 'right': ' -->' }}
 "----------------------------------------------------
 nnoremap <C-n> gt
 nnoremap <C-p> gT
-nnoremap <F8> :NERDTreeFind<CR>
-nnoremap <silent> <F9> :NERDTreeToggle<CR>
-nnoremap <silent> <F10> :TlistToggle<CR>
-nnoremap <silent> <F2> :VCSLog<CR>
-nnoremap <Space>s. :<C-u>source {$HOME}/.vimrc<CR>
 
 if v:version >= 700
     nnoremap <C-g> :call OpenNewTab()<CR>
@@ -290,6 +285,8 @@ if v:version >= 700
         execute ":tabnew ".f
     endfunction
 endif
+
+nnoremap <Space>s. :<C-u>source $HOME/.vimrc<CR>
 " }}}
 
 
@@ -431,13 +428,13 @@ NeoBundleFetch 'Shougo/neobundle.vim'
 " }}}
 
 
-" {{{ Vim plugins managed by NeoBundle
+" {{{ !!! VIM PLUGINS  !!! (managed by NeoBundle)
 "---------------------------------------------------
-NeoBundle 'unite.vim'
 NeoBundle 'unite-gem'
 NeoBundle 'unite-locate'
 NeoBundle 'unite-font'
 NeoBundle 'unite-colorscheme'
+"NeoBundle 'unite-outline'
 NeoBundle 'pasela/unite-webcolorname.git'
 NeoBundle 'neocomplcache'
 NeoBundle 'surround.vim'
@@ -450,9 +447,14 @@ NeoBundle 'thinca/vim-quickrun.git'
 NeoBundle 'briancollins/vim-jst.git'
 NeoBundle 'Shougo/neosnippet.git'
 NeoBundle 'Shougo/neosnippet-snippets.git'
-NeoBundle 'Shougo/junkfile.vim'
+NeoBundleLazy 'vim-jp/vital.vim', {
+      \ 'commands' : 'Vitalize',
+      \ }
+NeoBundleLazy 'Shougo/junkfile.vim', {
+      \ 'commands' : 'JunkfileOpen',
+      \ 'unite_sources' : ['junkfile', 'junkfile/new'],
+      \ }
 
-" vimproc 
 NeoBundle 'Shougo/vimproc', {
       \ 'build' : {
       \     'windows' : 'make -f make_mingw32.mak',
@@ -461,11 +463,43 @@ NeoBundle 'Shougo/vimproc', {
       \     'unix' : 'make -f make_unix.mak',
       \    },
       \ }
+NeoBundleLazy 'Shougo/unite.vim', {
+      \ 'commands' : [{ 'name' : 'Unite',
+      \ 'complete' : 'customlist,unite#complete_source'},
+      \ 'UniteWithCursorWord', 'UniteWithInput']
+      \ }
+NeoBundleLazy 'Shougo/unite-build'
+NeoBundleLazy 'Shougo/unite-ssh', {
+      \ 'filetypes' : 'vimfiler',
+      \ }
+
+NeoBundleLazy 'ujihisa/vimshell-ssh', {
+      \ 'filetypes' : 'vimshell',
+      \ }
+
+NeoBundleLazy 'Shougo/vimshell.vim', {
+      \ 'commands' : [{ 'name' : 'VimShell',
+      \ 'complete' : 'customlist,vimshell#complete'},
+      \ 'VimShellExecute', 'VimShellInteractive',
+      \ 'VimShellCreate',
+      \ 'VimShellTerminal', 'VimShellPop'],
+      \ 'mappings' : '<Plug>(vimshell_'
+      \ }
+NeoBundle 'kana/vim-operator-ser', {
+      \ 'functions' : 'operator#user#define',
+      \ }
+NeoBundleLazy 'kana/vim-operator-replace', {
+      \ 'depends' : 'vim-operator-user',
+      \ 'autoload' : {
+      \ 'mappings' : [
+      \ ['nx', '<Plug>(operator-replace)']]
+      \ }}
+NeoBundleLazy 'kana/vim-textobj-user'
 "NeoBundle 'tpope/vim-fugitive'
 "NeoBundle 'bling/vim-airline'
 "NeoBundle 'scrooloose/syntastic.git'
 "NeoBundle 'rails.vim'
-filetype plugin indent on 
+filetype plugin indent on
 " }}}
 
 
@@ -625,16 +659,26 @@ function! s:open_junk_file()
 endfunction
 " }}}
 
+" {{{ vim-operator-replace
+"----------------------------------------------------
+"
+nmap R <Plug>(operator-replace)
+xmap R <Plug>(operator-replace)
+" }}}
 
 " {{{ NERDTree
 "----------------------------------------------------
 let NERDTreeDirArrows=0
+
+nnoremap <F8> :NERDTreeFind<CR>
+nnoremap <silent> <F9> :NERDTreeToggle<CR>
+
 " }}}
 
 " {{{ Syntastic setting for Javascript JSLint
 "----------------------------------------------------
 "let g:syntastic_javascript_jslint_conf="--maxerr=400 --indent=2 --undef --nomen --regexp --plusplus --bitwise --newcap --sloppy --vars"
-"let g:syntastic_mode_map = { 
+"let g:syntastic_mode_map = {
 "  \ 'mode': 'active',
 "  \ 'active_filetypes': ['javascript', 'json'],
 "  \ 'passive_filetypes': ['php'] }
