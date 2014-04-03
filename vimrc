@@ -1,25 +1,30 @@
-"----------------------------------------------------
-" 基本的な設定
+" +++++++++++++++++++
+" open all folds  zR
+" close all folds  zM
+" @see :h fold
+" +++++++++++++++++++
+
+" {{{ 基本的な設定
 "----------------------------------------------------
 "leader
 let mapleader=" "
 "vimでbackspaceが効かないときの設定
 noremap  
 noremap!  
-
 "256色に対応
 set t_Co=256
-
+"Swapディレクトリを指定する場合
 ":set directory=~/.vim/vim_swp
-
-"set runtimepath+=~/.vim/syntax
-
 "viと同期しない設定
 set nocompatible
 "改行の認識
 set fileformats=unix,dos,mac
 "音を消す
 set vb t_vb=
+" バッファを切替えてもundoの効力を失わない
+set hidden
+" 起動時のメッセージを表示しない
+set shortmess+=I
 
 " バックスペースキーで削除できるものを指定
 " indent  : 行頭の空白
@@ -27,8 +32,14 @@ set vb t_vb=
 " start   : 挿入モード開始位置より手前の文字
 set backspace=indent,eol,start
 
-"----------------------------------------------------
-" バックアップ関係
+" high light current line
+au WinLeave * set nocursorline
+au WinEnter * set cursorline
+set cursorline "cursorcolumn
+" }}}
+
+
+" {{{ バックアップ関係
 "----------------------------------------------------
 " バックアップをとらない
 set nobackup
@@ -40,13 +51,10 @@ set writebackup
 "set backup
 " バックアップファイルを作るディレクトリ
 "set backupdir=~/backup
-" スワップファイルを作るディレクトリ
-"set directory=~/swap
+" }}}
 
 
-
-"----------------------------------------------------
-" 検索関係
+" {{{ 検索関係
 "----------------------------------------------------
 " コマンド、検索パターンを100個まで履歴に残す
 set history=100
@@ -58,21 +66,20 @@ set smartcase
 set wrapscan
 " インクリメンタルサーチを使わない
 set noincsearch
+" Ruby jump do - end
+source $VIMRUNTIME/macros/matchit.vim
+" }}}
 
 
-
-
-"----------------------------------------------------
-" 表示関係
+" {{{ 表示関係
 "----------------------------------------------------
 " タイトルをウインドウ枠に表示する
 set title
-" 行番号を表示しない
-"set nonumber
 " ルーラーを表示
-set ruler
+set ruler number
+set number
 " タブ文字を CTRL-I で表示し、行末に $ で表示する
-"set list
+set list
 " 入力中のコマンドをステータスに表示する
 set showcmd
 " ステータスラインを常に表示
@@ -108,9 +115,10 @@ set statusline=%n\:%y%F\ \|%{(&fenc!=''?&fenc:&enc).'\|'.&ff.'\|'}%m%r%=
 " ステータスラインの色
 "highlight StatusLine guifg=darkblue guibg=darkyellow gui=none ctermfg=blue ctermbg=yellow cterm=none
 highlight statusline   term=NONE cterm=NONE guifg=red ctermfg=yellow ctermbg=red
+" }}}
 
-"----------------------------------------------------
-" インデント
+
+" {{{ インデント
 "----------------------------------------------------
 " オートインデントを有効にする
 set autoindent
@@ -124,9 +132,10 @@ set shiftwidth=2
 "set noexpandtab
 " タブにスペースを使う
 set expandtab
+" }}}
 
-"----------------------------------------------------
-" 国際化関係
+
+" {{{ 文字コード関係
 "----------------------------------------------------
 " 文字コードの設定
 " fileencodingsの設定ではencodingの値を一番最後に記述する
@@ -136,96 +145,6 @@ set fileencoding=utf-8
 set fileencodings=ucs-bom,euc-jp,cp932,iso-2022-jp
 set fileencodings+=,ucs-2le,ucs-2,utf-8
 
-"----------------------------------------------------
-" ctags
-"----------------------------------------------------
-" 同じ関数名があった場合、どれに飛ぶか選択できるようにする
-nnoremap <C-]> g<C-]>
-
-"taglist
-let Tlist_Ctags_Cmd = "/usr/bin/ctags"    "ctagsのパス
-let Tlist_Show_One_File = 1               "現在編集中のソースのタグしか表示しない
-let Tlist_Exit_OnlyWindow = 1             "taglistのウィンドーが最後のウィンドーならばVimを閉じる
-let Tlist_Use_Right_Window = 1            "taglistを右側で開く
-" 現在のディレクトリから再帰的に上層のtagsファイルを探す
-
-"----------------------------------------------------
-" LookupFile
-"----------------------------------------------------
-nnoremap <silent> <F12> :LookupFile<CR>
-nmap <unique> <silent> <C-S> :LUBufs ^.*<CR>
-let g:LookupFile_AlwaysAcceptFirst=1
-let g:LookupFile_PreserveLastPattern=0
-let g:LookupFile_AllowNewFiles=0
-inoremap <buffer> <TAB> <C-n>
-inoremap <buffer> <S-TAB> <C-p>
-"inoremap <buffer> <C-c> <Esc><C-W>q
-"nnoremap <buffer> <C-c> <C-W>q
-"inoremap <buffer> <C-s> <Esc>:LUPath<CR>
-"nnoremap <buffer> <C-s> :LUPath<CR>
-
-
-"----------------------------------------------------
-" オートコマンド
-"----------------------------------------------------
-if has("autocmd")
-    " ファイルタイプ別インデント、プラグインを有効にする
-    filetype plugin indent on
-    " カーソル位置を記憶する
-    autocmd BufReadPost *
-        \ if line("'\"") > 0 && line("'\"") <= line("$") |
-        \   exe "normal g`\"" |
-        \ endif
-endif
-
-"<TAB>で補完
-"" {{{ Autocompletion using the TAB key
-" This function determines, wether we are on the start of the line text (then tab indents) or
-" " if we want to try autocompletion
-function! InsertTabWrapper()
-    let col = col('.') - 1
-    if !col || getline('.')[col - 1] !~ '\k'
-        return "\<TAB>"
-    else
-        if pumvisible()
-            return "\<C-N>"
-        else
-            return "\<C-N>\<C-P>"
-        end
-    endif
-endfunction
-inoremap <tab> <c-r>=InsertTabWrapper()<cr>
-
-":autocmd FileType php noremap <F2> :!php -l %<CR>
-
-"smarty シンタックスの設定
-au BufRead,BufNewFile *.tpl.* set filetype=smarty
-au Filetype smarty exec('set dictionary=$HOME/.vim/syntax/smarty.vim')
-au Filetype smarty set complete+=k
-
-"rspec シンタックスの設定
-au BufRead,BufNewFile *_spec.rb set filetype=ruby.rspec 
-au Filetype ruby exec('set dictionary=$HOME/.vim/syntax/rspec.vim')
-
-"jstest シンタックスの設定
-au BufRead,BufNewFile *_spec.js set filetype=javascript.jstest
-
-"ejs シンタックスの設定
-au BufRead,BufNewFile *.ejs set filetype=jst
-let g:NERDCustomDelimiters = {'jst': { 'left': '<!-- ', 'right': ' -->' }}
-
-"----------------------------------------------------
-" その他
-"----------------------------------------------------
-" バッファを切替えてもundoの効力を失わない
-set hidden
-" 起動時のメッセージを表示しない
-set shortmess+=I
-
-set ruler number
-set number
-" set runtimepath+=$HOME/.vim/pluguin,$HOME/.vim/doc,$HOME/.vim/autoload
-"
 if &encoding !=# 'utf-8'
     set encoding=japan
     set fileencoding=japan
@@ -277,20 +196,86 @@ endif
 
 "svnの時はutf-8に文字コードを設定
 autocmd FileType svn :set fileencoding=utf-8
+" }}}
 
 
+" {{{ ctags
 "----------------------------------------------------
-" キーマップ割り当てセクション
+" 同じ関数名があった場合、どれに飛ぶか選択できるようにする
+nnoremap <C-]> g<C-]>
+
+"taglist
+let Tlist_Ctags_Cmd = "/usr/bin/ctags"    "ctagsのパス
+let Tlist_Show_One_File = 1               "現在編集中のソースのタグしか表示しない
+let Tlist_Exit_OnlyWindow = 1             "taglistのウィンドーが最後のウィンドーならばVimを閉じる
+let Tlist_Use_Right_Window = 1            "taglistを右側で開く
+" }}}
+
+
+" {{{ タブの移動
+"----------------------------------------------------
+inoremap <buffer> <TAB> <C-n>
+inoremap <buffer> <S-TAB> <C-p>
+" }}}
+
+
+" {{{ オートコマンド
+"----------------------------------------------------
+if has("autocmd")
+    " ファイルタイプ別インデント、プラグインを有効にする
+    filetype plugin indent on
+    " カーソル位置を記憶する
+    autocmd BufReadPost *
+        \ if line("'\"") > 0 && line("'\"") <= line("$") |
+        \   exe "normal g`\"" |
+        \ endif
+endif
+" }}}
+
+
+"" {{{ <TAB>で補完
+"----------------------------------------------------
+function! InsertTabWrapper()
+    let col = col('.') - 1
+    if !col || getline('.')[col - 1] !~ '\k'
+        return "\<TAB>"
+    else
+        if pumvisible()
+            return "\<C-N>"
+        else
+            return "\<C-N>\<C-P>"
+        end
+    endif
+endfunction
+inoremap <tab> <c-r>=InsertTabWrapper()<cr>
+"}}}
+
+
+" {{{ Syntax関係
+"----------------------------------------------------
+
+"smarty シンタックスの設定
+au BufRead,BufNewFile *.tpl.* set filetype=smarty
+au Filetype smarty exec('set dictionary=$HOME/.vim/syntax/smarty.vim')
+au Filetype smarty set complete+=k
+
+"rspec シンタックスの設定
+au BufRead,BufNewFile *_spec.rb set filetype=ruby.rspec
+au Filetype ruby exec('set dictionary=$HOME/.vim/syntax/rspec.vim')
+
+"jstest シンタックスの設定
+au BufRead,BufNewFile *_spec.js set filetype=javascript.jstest
+
+"ejs シンタックスの設定
+au BufRead,BufNewFile *.ejs set filetype=jst
+let g:NERDCustomDelimiters = {'jst': { 'left': '<!-- ', 'right': ' -->' }}
+" }}}
+
+
+" {{{ キーマップ割り当て
 "----------------------------------------------------
 nnoremap <C-n> gt
 nnoremap <C-p> gT
-nnoremap <F8> :NERDTreeFind<CR>
-"nnoremap <C-w>j :<C-w>j<ESC>:NERDTreeFind<CR>
-nnoremap <silent> <F9> :NERDTreeToggle<CR>
-nnoremap <silent> <F10> :TlistToggle<CR>
-nnoremap <silent> <F11> :VCSDiff<CR>
-nnoremap <silent> <F2> :VCSLog<CR>
-nnoremap <Space>s. :<C-u>source {$HOME}/.vimrc<CR>
 
 if v:version >= 700
     nnoremap <C-g> :call OpenNewTab()<CR>
@@ -301,6 +286,11 @@ if v:version >= 700
     endfunction
 endif
 
+nnoremap <Space>s. :<C-u>source $HOME/.vimrc<CR>
+" }}}
+
+
+" {{{ VCSDiff拡張 VCSDiffPast
 "-----------------------------------------------
 "svnでいくつ前のリビジョンかを指定して比較を行なう
 "listオプションを指定すれば一覧から選択形式で比較できる
@@ -389,25 +379,17 @@ function! GetPastRevisionByList(n)
     endif
     return r
 endfunction
+" }}}
 
 
-"範囲移動
-"nnoremap <C-K> :m -2<CR>
-"nnoremap <C-J> :m +1<CR>
+" {{{ 範囲移動
+"---------------------------------------------------
 vnoremap <C-K> :m -2<CR>v '<
 vnoremap <C-J> :m '>+1<CR>v '<
+" }}}
 
-au FileType php inoremap <C-e> <ESC>$a;
 
-
-nnoremap <F4> :call TestFunc()<CR>
-function! TestFunc()
-    let f = system("svn st | egrep \"^M\" | awk '{print $2}'")
-    let dirs = split(f, '/')
-    echo dirs
-endfunction
-"---------------------------------------------------
-" タブに{tabNo} - {window count}を表示する
+" {{{ タブに{tabNo} - {window count}を表示する
 "---------------------------------------------------
 if v:version >= 700
 
@@ -429,64 +411,102 @@ if v:version >= 700
     set tabline=%!TabLine()
 
 endif
+" }}}
 
-"
-" high light current line 
-"
-au WinLeave * set nocursorline 
-au WinEnter * set cursorline 
-set cursorline "cursorcolumn
 
+" {{{ NeoBundle Setting
 "---------------------------------------------------
-" Vundles Setting
+if has('vim_starting')
+  set nocompatible               " Be iMproved
+  set runtimepath+=~/.vim/bundle/neobundle.vim/
+endif
+
+call neobundle#rc(expand('~/.vim/bundle/'))
+
+" Let NeoBundle manage NeoBundle
+NeoBundleFetch 'Shougo/neobundle.vim'
+" }}}
+
+
+" {{{ !!! VIM PLUGINS  !!! (managed by NeoBundle)
 "---------------------------------------------------
-set nocompatible               " be iMproved
-filetype off                   " required!
+NeoBundle 'unite-gem'
+NeoBundle 'unite-locate'
+NeoBundle 'unite-font'
+NeoBundle 'unite-colorscheme'
+"NeoBundle 'unite-outline'
+NeoBundle 'pasela/unite-webcolorname.git'
+NeoBundle 'neocomplcache'
+NeoBundle 'surround.vim'
+NeoBundle 'vcscommand.vim'
+NeoBundle 'jimsei/winresizer'
+NeoBundle 'scrooloose/nerdcommenter.git'
+NeoBundle 'scrooloose/nerdtree.git'
+NeoBundle 'pangloss/vim-javascript.git'
+NeoBundle 'thinca/vim-quickrun.git'
+NeoBundle 'briancollins/vim-jst.git'
+NeoBundle 'Shougo/neosnippet.git'
+NeoBundle 'Shougo/neosnippet-snippets.git'
+NeoBundleLazy 'vim-jp/vital.vim', {
+      \ 'commands' : 'Vitalize',
+      \ }
+NeoBundleLazy 'Shougo/junkfile.vim', {
+      \ 'commands' : 'JunkfileOpen',
+      \ 'unite_sources' : ['junkfile', 'junkfile/new'],
+      \ }
 
-set rtp+=~/.vim/bundle/vundle/
-call vundle#rc()
+NeoBundle 'Shougo/vimproc', {
+      \ 'build' : {
+      \     'windows' : 'make -f make_mingw32.mak',
+      \     'cygwin' : 'make -f make_cygwin.mak',
+      \     'mac' : 'make -f make_mac.mak',
+      \     'unix' : 'make -f make_unix.mak',
+      \    },
+      \ }
+NeoBundleLazy 'Shougo/unite.vim', {
+      \ 'commands' : [{ 'name' : 'Unite',
+      \ 'complete' : 'customlist,unite#complete_source'},
+      \ 'UniteWithCursorWord', 'UniteWithInput']
+      \ }
+NeoBundleLazy 'Shougo/unite-build'
+NeoBundleLazy 'Shougo/unite-ssh', {
+      \ 'filetypes' : 'vimfiler',
+      \ }
 
-" let Vundle manage Vundle
-" required! 
-Bundle 'gmarik/vundle'
+NeoBundleLazy 'ujihisa/vimshell-ssh', {
+      \ 'filetypes' : 'vimshell',
+      \ }
 
-" My Bundles here:
-Bundle 'unite.vim'
-Bundle 'unite-gem'
-Bundle 'unite-locate'
-Bundle 'unite-font'
-Bundle 'unite-colorscheme'
-Bundle 'neocomplcache'
-Bundle 'surround.vim'
-Bundle 'jimsei/winresizer'
-Bundle 'git://github.com/pasela/unite-webcolorname.git'
-Bundle 'git://github.com/thinca/vim-quickrun.git'
-Bundle 'git://github.com/Shougo/neosnippet.git'
-Bundle 'git://github.com/Shougo/neosnippet-snippets.git'
-Bundle 'git://github.com/pangloss/vim-javascript.git'
-Bundle 'git://github.com/briancollins/vim-jst.git'
-Bundle 'git://github.com/scrooloose/nerdcommenter.git'
-Bundle 'git://github.com/scrooloose/nerdtree.git'
-"Bundle 'tpope/vim-fugitive'
-"Bundle 'bling/vim-airline'
-"Bundle 'git://github.com/scrooloose/syntastic.git'
+NeoBundleLazy 'Shougo/vimshell.vim', {
+      \ 'commands' : [{ 'name' : 'VimShell',
+      \ 'complete' : 'customlist,vimshell#complete'},
+      \ 'VimShellExecute', 'VimShellInteractive',
+      \ 'VimShellCreate',
+      \ 'VimShellTerminal', 'VimShellPop'],
+      \ 'mappings' : '<Plug>(vimshell_'
+      \ }
+NeoBundle 'kana/vim-operator-user', {
+      \ 'functions' : 'operator#user#define',
+      \ }
+NeoBundleLazy 'kana/vim-operator-replace', {
+      \ 'depends' : 'vim-operator-user',
+      \ 'autoload' : {
+      \ 'mappings' : [
+      \ ['nx', '<Plug>(operator-replace)']]
+      \ }}
+NeoBundleLazy 'kana/vim-textobj-user'
+"NeoBundle 'tpope/vim-fugitive'
+"NeoBundle 'bling/vim-airline'
+"NeoBundle 'scrooloose/syntastic.git'
+"NeoBundle 'rails.vim'
+filetype plugin indent on
+" }}}
 
+
+" {{{ Vim plugin settings
+"---------------------------------------------------
 "
-" original repos on github
-"Bundle 'tpope/vim-fugitive'
-"Bundle 'Lokaltog/vim-easymotion'
-"Bundle 'rstacruz/sparkup', {'rtp': 'vim/'}
-" vim-scripts repos
-"Bundle 'L9'
-"Bundle 'FuzzyFinder'
-"Bundle 'rails.vim'
-" non github repos
-"Bundle 'git://git.wincent.com/command-t.git'
-
-filetype plugin indent on 
-
-"---------------------------------------------------
-" Unite Setting
+" {{{ Unite Setting
 "---------------------------------------------------
 let g:unite_enable_start_insert = 1
 let g:unite_enable_split_vertically = 1
@@ -505,21 +525,9 @@ nnoremap <silent> [unite]o :<C-u>Unite outline<CR>
 nnoremap <silent> [unite]a :<C-u>UniteBookmarkAdd<CR>
 "unite bookmark list
 nnoremap <silent> [unite]l :<C-u>Unite bookmark<CR>
+" }}}
 
-"---------------------------------------------------
-" Window Keymap Setting
-"---------------------------------------------------
-"quick chenge window size 
-"Ctrl + E jkhl
-"nnoremap [winsize] <Nop>
-"nmap <C-E> [winsize]
-"nnoremap [winsize]k :resize -3<CR>
-"nnoremap [winsize]j :resize +3<CR>
-"nnoremap [winsize]h :vertical resize +10<CR>
-"nnoremap [winsize]l :vertical resize -10<CR>
-
-"---------------------------------------------------
-" neocomplepop setting
+" {{{ neocomplepop setting
 "---------------------------------------------------
 " Disable AutoComplPop.
 let g:acp_enableAtStartup = 0
@@ -603,16 +611,17 @@ if !exists('g:neocomplcache_plugin_rank')
   let g:neocomplcache_plugin_rank = {}
 endif
 let g:neocomplcache_plugin_rank.buffer_complete = 90
+" }}}
 
-"================================================================================
-" original value
-"================================================================================
+" {{{ winresizer
+"----------------------------------------------------
 let g:winresizer_enable = 1
 let g:winresizer_start_key = '<C-E>'
+" }}}
 
-"================================================================================
-" quickrun settings
-"================================================================================
+
+" {{{ quickrun
+"----------------------------------------------------
 let g:quickrun_config = {}
 let g:quickrun_config._ = {'runner' : 'vimproc', "runner/vimproc/updatetime" : 10}
 let g:quickrun_config['ruby.rspec'] = {'command': 'rspec', 'cmdopt': '-cfs'}
@@ -632,11 +641,10 @@ fun! QRunRspecCurrentLine()
   let line = line(".")
   exe ":QuickRun -cmdopt '-cfs -l " . line . "'"
 endfun
+" }}}
 
-
-"================================================================================
-" Open junk file.
-"================================================================================
+" {{{ JunkFile.
+"----------------------------------------------------
 command! -nargs=0 JunkFile call s:open_junk_file()
 function! s:open_junk_file()
   let l:junk_dir = $HOME . '/.vim_junk'. strftime('/%Y/%m')
@@ -649,31 +657,47 @@ function! s:open_junk_file()
     execute 'edit ' . l:filename
   endif
 endfunction
+" }}}
 
-"================================================================================
-" Ruby jump do - end
-"================================================================================
-source $VIMRUNTIME/macros/matchit.vim
+" {{{ vim-operator-replace
+"----------------------------------------------------
+"
+nmap R <Plug>(operator-replace)
+xmap R <Plug>(operator-replace)
+" }}}
 
-"================================================================================
-" NERDTree
-"================================================================================
+" {{{ NERDTree
+"----------------------------------------------------
 let NERDTreeDirArrows=0
 
-"================================================================================
-" Syntastic setting for Javascript JSLint
-"================================================================================
-let g:syntastic_javascript_jslint_conf="--maxerr=400 --indent=2 --undef --nomen --regexp --plusplus --bitwise --newcap --sloppy --vars"
-let g:syntastic_mode_map = { 
-  \ 'mode': 'active',
-  \ 'active_filetypes': ['javascript', 'json'],
-  \ 'passive_filetypes': ['php'] }
+nnoremap <F8> :NERDTreeFind<CR>
+nnoremap <silent> <F9> :NERDTreeToggle<CR>
 
-"================================================================================
-" 独自拡張を読み込む
-" 独自拡張が優先させるため、このブロックは末尾に記載する事
-"================================================================================
-"
+" }}}
+
+" {{{ Syntastic setting for Javascript JSLint
+"----------------------------------------------------
+"let g:syntastic_javascript_jslint_conf="--maxerr=400 --indent=2 --undef --nomen --regexp --plusplus --bitwise --newcap --sloppy --vars"
+"let g:syntastic_mode_map = {
+"  \ 'mode': 'active',
+"  \ 'active_filetypes': ['javascript', 'json'],
+"  \ 'passive_filetypes': ['php'] }
+" }}}
+
+" {{{ 独自拡張を読み込む 独自拡張が優先させるため、このブロックは末尾に記載する事
+"----------------------------------------------------
+
 if glob("$HOME/.vimrc.local") != ''
   source $HOME/.vimrc.local
 endif
+" }}}
+
+" }}}
+
+" +++++++++++++++++++
+" open all folds  zR
+" close all folds  zM
+" @see :h fold
+" +++++++++++++++++++
+
+" vim: foldmethod=marker:
