@@ -59,7 +59,18 @@ dotfiles $2 && exit 0
 $1
 ;;
 *)
-echo $"Usage: $0 { dotfiles | dofiles cleanup | vimenv }"
+cat << EOS
+Usage: $0 { dotfiles | dofiles cleanup | vimenv }
+
+$0 dotfiles
+  create dotfile symlinks
+
+$0 ditfiles cleanup
+  remove dotfile symlinks
+
+$0 vimenv
+  build vim enviroment and install plugins
+EOS
 exit 2
 esac
 exit $?
