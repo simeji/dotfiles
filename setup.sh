@@ -12,6 +12,8 @@ dircolors="dir_colors"
 
 dir="${HOME}/"
 
+targets=($vimdir $vimrc $tmuxconf $zshrc $gitconfig $dircolors)
+
 # The function to make symbolic link
 # Arguments
 # $1 : target of symlink path
@@ -32,12 +34,13 @@ makeSymLink() {
 }
 
 dotfiles() {
-  makeSymLink "${dir}.${vimrc}" "/${vimrc}"
-  makeSymLink "${dir}.${screenrc}" "/${screenrc}"
-  makeSymLink "${dir}.${tmuxconf}" "/${tmuxconf}"
-  makeSymLink "${dir}.${zshrc}" "/${zshrc}"
-  makeSymLink "${dir}.${dircolors}" "/${dircolors}"
-  makeSymLink "${dir}.${gitconfig}" "/${gitconfig}"
+  for target in ${targets[@]}; do
+    if [ $# = 0 ]; then
+      makeSymLink "${dir}.${target}" "/${target}"
+    elif [ $1 = 'cleanup' -a -h "${dir}.${target}" ]; then
+      rm -i $dir.$target
+    fi
+  done
 }
 
 vimenv() {
@@ -52,11 +55,22 @@ vimenv && exit 0
 $1
 ;;
 dotfiles)
-dotfiles && exit 0
+dotfiles $2 && exit 0
 $1
 ;;
 *)
-echo $"Usage: $0 {dotfiles|vimenv}"
+cat << EOS
+Usage: $0 { dotfiles | dofiles cleanup | vimenv }
+
+$0 dotfiles
+  create dotfile symlinks
+
+$0 ditfiles cleanup
+  remove dotfile symlinks
+
+$0 vimenv
+  build vim enviroment and install plugins
+EOS
 exit 2
 esac
 exit $?
