@@ -449,6 +449,10 @@ NeoBundle 'thinca/vim-quickrun.git'
 NeoBundle 'briancollins/vim-jst.git'
 "NeoBundleLazy 'Shougo/unite-session'
 NeoBundleLazy 'Shougo/unite-outline'
+NeoBundle 'thinca/vim-ref', {
+      \ 'commands' : 'Ref',
+      \ 'unite_sources' : 'ref',
+      \ }
 NeoBundleLazy 'thinca/vim-unite-history', {
       \ 'unite_sources' : ['history/command', 'history/search']
       \ }
@@ -556,6 +560,11 @@ nnoremap <silent> [unite]o :<C-u>Unite outline<CR>
 nnoremap <silent> [unite]a :<C-u>UniteBookmarkAdd<CR>
 "unite bookmark list
 nnoremap <silent> [unite]l :<C-u>Unite bookmark<CR>
+autocmd FileType * nnoremap <silent><buffer> [unite]t :<C-u>Unite -default-action=vsplit ref/man<CR>
+autocmd FileType erlang nnoremap <silent><buffer> [unite]t :<C-u>Unite -default-action=vsplit ref/erlang<CR>
+autocmd FileType ruby nnoremap <silent><buffer> [unite]t :<C-u>Unite -default-action=vsplit ref/refe<CR>
+autocmd FileType python nnoremap <silent><buffer> [unite]t :<C-u>Unite -default-action=vsplit ref/pydoc<CR>
+autocmd FileType perl nnoremap <silent><buffer> [unite]t :<C-u>Unite -default-action=vsplit ref/perldoc<CR>
 " }}}
 
 " {{{ neocomplcache or neocomplete setting
@@ -771,6 +780,13 @@ fun! QRunRspecCurrentLine()
   let line = line(".")
   exe ":QuickRun -cmdopt '-cfs -l " . line . "'"
 endfun
+" }}}
+
+" {{{ vim-ref
+"----------------------------------------------------
+let g:ref_use_vimproc = 1
+let $GEM_HOME = $HOME . "/dotfiles/gems"
+let g:ref_refe_cmd = $HOME . "/dotfiles/gems/bin/refe"
 " }}}
 
 " {{{ JunkFile.

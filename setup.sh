@@ -44,6 +44,17 @@ dotfiles() {
 }
 
 vimenv() {
+  basedir=$(dirname $0)
+  if [ $# = 0 ]; then
+    echo 'nomal setup'
+  elif [ $1 = 'ruby' -a ! -f $basedir/gems/bin/refe ]; then
+    echo 'setup with ruby refe'
+    echo 'GEM_HOME set '. $basedir/gems
+    which gem && GEM_HOME=$basedir/gems gem install refe2 
+    test -f $basedir/gems/bin/bitclust && GEM_HOME=$basedir/gems $basedir/gems/bin/bitclust setup
+  else
+    echo 'Additional section : Nothing to do.'
+  fi
   which git || yum install git -y
   test -d ~/.vim/bundle/vundle || git clone https://github.com/Shougo/neobundle.vim ~/.vim/bundle/neobundle.vim
   vim ~/.vimrc -c NeoBundleInstall
@@ -51,7 +62,7 @@ vimenv() {
 
 case "$1" in
 vimenv)
-vimenv && exit 0
+vimenv $2 && exit 0
 $1
 ;;
 dotfiles)
@@ -70,6 +81,9 @@ $0 ditfiles cleanup
 
 $0 vimenv
   build vim enviroment and install plugins
+
+$0 vimenv ruby
+  build vim enviroment and install plugins with ruby refe
 EOS
 exit 2
 esac
