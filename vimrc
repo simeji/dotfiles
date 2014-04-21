@@ -115,10 +115,10 @@ colorscheme Tomorrow-Night-Bright-Simeji
 
 " ステータスラインに表示する情報の指定
 "set statusline=%n\:%y%F\ \|%{fugitive#statusline()}%{(&fenc!=''?&fenc:&enc).'\|'.&ff.'\|'}%m%r%=
-set statusline=%n\:%y%F\ \|%{(&fenc!=''?&fenc:&enc).'\|'.&ff.'\|'}%m%r%=
+"set statusline=%n\:%y%F\ \|%{(&fenc!=''?&fenc:&enc).'\|'.&ff.'\|'}%m%r%=
 " ステータスラインの色
 "highlight StatusLine guifg=darkblue guibg=darkyellow gui=none ctermfg=blue ctermbg=yellow cterm=none
-highlight statusline   term=NONE cterm=NONE guifg=red ctermfg=yellow ctermbg=red
+"highlight statusline   term=NONE cterm=NONE guifg=red ctermfg=yellow ctermbg=red
 " }}}
 
 
@@ -448,7 +448,12 @@ NeoBundle 'pangloss/vim-javascript.git'
 NeoBundle 'thinca/vim-quickrun.git'
 NeoBundle 'briancollins/vim-jst.git'
 "NeoBundleLazy 'Shougo/unite-session'
+NeoBundle 'bling/vim-airline'
 NeoBundleLazy 'Shougo/unite-outline'
+NeoBundleLazy 'osyo-manga/vim-reanimate', {
+      \ 'autoload' : {
+      \ 'commands' : ['ReanimateLoad', 'ReanimateSave' ]
+      \ }}
 NeoBundle 'thinca/vim-ref', {
       \ 'commands' : 'Ref',
       \ 'unite_sources' : 'ref',
@@ -531,7 +536,6 @@ else
 endif
 
 "NeoBundle 'tpope/vim-fugitive'
-"NeoBundle 'bling/vim-airline'
 "NeoBundle 'scrooloose/syntastic.git'
 "NeoBundle 'rails.vim'
 filetype plugin indent on
@@ -812,14 +816,33 @@ nmap R <Plug>(operator-replace)
 xmap R <Plug>(operator-replace)
 " }}}
 
-" {{{ NERDTree
-"----------------------------------------------------
-let NERDTreeDirArrows=0
+" vim-airline {{{
+let s:bundle = neobundle#get("vim-airline")
+let s:bundle.hooks = get(s:bundle, "hooks", {})
+function! s:bundle.hooks.on_source(bundle)
+  "let g:airline_section_b = "%{matchstr(reanimate#last_point(), '.*/\\zs.*')}"
+  let g:airline_theme='solarized'
+endfunction
+unlet s:bundle
+let g:airline_section_a = airline#section#create(['%<', 'file', 'readonly'])
+let g:airline_section_b = airline#section#create_left(['mode', 'paste', 'iminsert'])
+let g:airline_section_c = airline#section#create(['hunks'])
+"let g:airline_section_gutter = airline#section#create(['%=%y%m%r[%{&ff}]'])
+"let g:airline_section_x = airline#section#create_right(['filetype'])
+let g:airline_section_y = '%y%m%r%=[%{&ff}]' "airline#section#create_right(['ffenc'])
+"let g:airline_section_y = airline#section#create_right(['ffenc'])
+let g:airline_section_z = airline#section#create(['%(%l,%c%V%) %P'])
+let g:airline_section_warning = airline#section#create(['whitespace'])
+"" }}}
 
-nnoremap <F8> :NERDTreeFind<CR>
-nnoremap <silent> <F9> :NERDTreeToggle<CR>
+"" {{{ NERDTree
+""----------------------------------------------------
+"let NERDTreeDirArrows=0
 
-" }}}
+"nnoremap <F8> :NERDTreeFind<CR>
+"nnoremap <silent> <F9> :NERDTreeToggle<CR>
+
+"" }}}
 
 " {{{ Syntastic setting for Javascript JSLint
 "----------------------------------------------------
