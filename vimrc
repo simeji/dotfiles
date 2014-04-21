@@ -114,6 +114,7 @@ colorscheme Tomorrow-Night-Bright-Simeji
 "colorscheme solarized
 
 " ステータスラインに表示する情報の指定
+" airline利用のため外す
 "set statusline=%n\:%y%F\ \|%{fugitive#statusline()}%{(&fenc!=''?&fenc:&enc).'\|'.&ff.'\|'}%m%r%=
 "set statusline=%n\:%y%F\ \|%{(&fenc!=''?&fenc:&enc).'\|'.&ff.'\|'}%m%r%=
 " ステータスラインの色
@@ -447,8 +448,8 @@ NeoBundle 'scrooloose/nerdtree.git'
 NeoBundle 'pangloss/vim-javascript.git'
 NeoBundle 'thinca/vim-quickrun.git'
 NeoBundle 'briancollins/vim-jst.git'
-"NeoBundleLazy 'Shougo/unite-session'
 NeoBundle 'bling/vim-airline'
+NeoBundle "kien/ctrlp.vim"
 NeoBundleLazy 'Shougo/unite-outline'
 NeoBundleLazy 'osyo-manga/vim-reanimate', {
       \ 'autoload' : {
@@ -817,23 +818,82 @@ xmap R <Plug>(operator-replace)
 " }}}
 
 " vim-airline {{{
+"----------------------------------------------------
+"
 let s:bundle = neobundle#get("vim-airline")
 let s:bundle.hooks = get(s:bundle, "hooks", {})
 function! s:bundle.hooks.on_source(bundle)
   "let g:airline_section_b = "%{matchstr(reanimate#last_point(), '.*/\\zs.*')}"
-  let g:airline_theme='solarized'
+  let g:airline_theme = 'solarized'
 endfunction
 unlet s:bundle
 let g:airline_section_a = airline#section#create(['%<', 'file', 'readonly'])
 let g:airline_section_b = airline#section#create_left(['mode', 'paste', 'iminsert'])
 let g:airline_section_c = airline#section#create(['hunks'])
 "let g:airline_section_gutter = airline#section#create(['%=%y%m%r[%{&ff}]'])
-"let g:airline_section_x = airline#section#create_right(['filetype'])
-let g:airline_section_y = '%y%m%r%=[%{&ff}]' "airline#section#create_right(['ffenc'])
+"let g:airline_section_x = airline#section#create_right([])
+"let g:airline_section_y = '%y%m%r%=[%{(&fenc!=""?&fenc:&enc)}][%{&ff}]' "airline#section#create_right(['ffenc'])
+let g:airline_section_y = airline#section#create_right(['%{(&fenc!=""?&fenc:&enc)},%{&ff}'])
 "let g:airline_section_y = airline#section#create_right(['ffenc'])
 let g:airline_section_z = airline#section#create(['%(%l,%c%V%) %P'])
 let g:airline_section_warning = airline#section#create(['whitespace'])
+" tab setting
+"let g:airline#extensions#tabline#enabled = 1
+
+let g:airline_powerline_fonts = 1
+if !exists('g:airline_symbols')
+  let g:airline_symbols = {}
+endif
+
+" unicode symbols
+let g:airline_left_sep = '»'
+let g:airline_left_sep = '▶'
+let g:airline_right_sep = '«'
+let g:airline_right_sep = '◀'
+"let g:airline_symbols.linenr = '␊'
+"let g:airline_symbols.linenr = '␤'
+let g:airline_symbols.linenr = '¶'
+let g:airline_symbols.branch = '⎇'
+let g:airline_symbols.paste = 'ρ'
+"let g:airline_symbols.paste = 'Þ'
+"let g:airline_symbols.paste = '∥'
+let g:airline_symbols.whitespace = 'Ξ'
+
+"https://github.com/bling/vim-airline#fine-tuned-configuration
+"function! AccentDemo()
+  "let keys = ['a','b','c','d','e','f','g','h']
+  "for k in keys
+    "call airline#parts#define_text(k, k)
+  "endfor
+  "call airline#parts#define_accent('a', 'red')
+  "call airline#parts#define_accent('b', 'green')
+  "call airline#parts#define_accent('c', 'blue')
+  "call airline#parts#define_accent('d', 'yellow')
+  "call airline#parts#define_accent('e', 'orange')
+  "call airline#parts#define_accent('f', 'purple')
+  "call airline#parts#define_accent('g', 'bold')
+  "call airline#parts#define_accent('h', 'italic')
+  "let g:airline_section_a = airline#section#create(keys)
+"endfunction
+"autocmd VimEnter * call AccentDemo()
 "" }}}
+
+"" {{{ CtrlP
+""----------------------------------------------------
+let g:ctrlp_map = '<c-m>'
+
+let g:ctrlp_prompt_mappings = {
+    \ 'PrtSelectMove("j")':   ['<c-n>', '<down>'],
+    \ 'PrtSelectMove("k")':   ['<c-p>', '<up>'],
+    \ 'PrtHistory(-1)':       ['<c-h>'],
+    \ 'PrtHistory(1)':        ['<c-l>'],
+    \ 'PrtCurLeft()':         ['<left>', '<c-^>'],
+    \ 'PrtCurRight()':        ['<right>'],
+    \ 'AcceptSelection("e")': ['<c-o>'],
+    \ 'AcceptSelection("v")': ['<c-v>', '<cr>'],
+    \ }
+" }}}
+
 
 "" {{{ NERDTree
 ""----------------------------------------------------
