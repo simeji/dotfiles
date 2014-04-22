@@ -897,10 +897,10 @@ let g:ctrlp_prompt_mappings = {
 
 "" {{{ NERDTree
 ""----------------------------------------------------
-"let NERDTreeDirArrows=0
+let NERDTreeDirArrows=0
 
-"nnoremap <F8> :NERDTreeFind<CR>
-"nnoremap <silent> <F9> :NERDTreeToggle<CR>
+nnoremap <F8> :NERDTreeFind<CR>
+nnoremap <silent> <F9> :NERDTreeToggle<CR>
 
 "" }}}
 
