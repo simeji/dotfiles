@@ -448,7 +448,8 @@ NeoBundle 'scrooloose/nerdtree.git'
 NeoBundle 'pangloss/vim-javascript.git'
 NeoBundle 'thinca/vim-quickrun.git'
 NeoBundle 'briancollins/vim-jst.git'
-NeoBundle 'bling/vim-airline'
+NeoBundle 'itchyny/lightline.vim'
+NeoBundle 'airblade/vim-gitgutter'
 NeoBundle "kien/ctrlp.vim"
 NeoBundleLazy 'Shougo/unite-outline'
 NeoBundleLazy 'osyo-manga/vim-reanimate', {
@@ -518,6 +519,8 @@ NeoBundleLazy 'kana/vim-operator-replace', {
       \ }}
 NeoBundleLazy 'kana/vim-textobj-user'
 NeoBundle 'altercation/vim-colors-solarized'
+NeoBundle 'jeffreyiacono/vim-colors-wombat'
+NeoBundle 'nanotech/jellybeans.vim'
 
 function! s:meet_neocomplete_requirements()
     return has('lua') && (v:version > 703 || (v:version == 703 && has('patch885')))
@@ -536,7 +539,7 @@ else
          \ }
 endif
 
-"NeoBundle 'tpope/vim-fugitive'
+NeoBundle 'tpope/vim-fugitive'
 "NeoBundle 'scrooloose/syntastic.git'
 "NeoBundle 'rails.vim'
 filetype plugin indent on
@@ -817,66 +820,163 @@ nmap R <Plug>(operator-replace)
 xmap R <Plug>(operator-replace)
 " }}}
 
-" vim-airline {{{
+" vim-gitgutter {{{
 "----------------------------------------------------
-"
-let s:bundle = neobundle#get("vim-airline")
-let s:bundle.hooks = get(s:bundle, "hooks", {})
-function! s:bundle.hooks.on_source(bundle)
-  "let g:airline_section_b = "%{matchstr(reanimate#last_point(), '.*/\\zs.*')}"
-  let g:airline_theme = 'solarized'
+let g:gitgutter_sign_added = '✚'
+let g:gitgutter_sign_modified = '➜'
+let g:gitgutter_sign_removed = '✘'
+" }}}
+
+" lightline.vim {{{
+"----------------------------------------------------
+let g:lightline = {
+        \ 'colorscheme': 'wombat',
+        \ 'mode_map': {'c': 'NORMAL'},
+        \ 'active': {
+        \   'left': [
+        \     ['mode', 'paste'],
+        \     ['fugitive', 'gitgutter', 'filename'],
+        \   ],
+        \   'right': [
+        \     ['lineinfo', 'syntastic'],
+        \     ['percent'],
+        \     ['charcode', 'fileformat', 'fileencoding', 'filetype'],
+        \   ]
+        \ },
+        \ 'inactive': {
+        \   'left': [['inactive_filename']],
+        \   'right': [['filetype']]
+        \ },
+        \ 'component_function': {
+        \   'modified': 'MyModified',
+        \   'readonly': 'MyReadonly',
+        \   'fugitive': 'MyFugitive',
+        \   'filename': 'MyFilename',
+        \   'inactive_filename': 'MyInactiveFilename',
+        \   'fileformat': 'MyFileformat',
+        \   'filetype': 'MyFiletype',
+        \   'fileencoding': 'MyFileencoding',
+        \   'mode': 'MyMode',
+        \   'syntastic': 'SyntasticStatuslineFlag',
+        \   'charcode': 'MyCharCode',
+        \   'gitgutter': 'MyGitGutter',
+        \ },
+        \ 'separator': {'left': '｜', 'right': '｜'},
+        \ 'subseparator': {'left': '｜', 'right': '｜'}
+        \ }
+
+function! MyModified()
+  return &ft =~ 'help\|vimfiler\|gundo' ? '' : &modified ? '+' : &modifiable ? '' : '-'
 endfunction
-unlet s:bundle
-let g:airline_section_a = airline#section#create(['%<', 'file', 'readonly'])
-let g:airline_section_b = airline#section#create_left(['mode', 'paste', 'iminsert'])
-let g:airline_section_c = airline#section#create(['hunks'])
-"let g:airline_section_gutter = airline#section#create(['%=%y%m%r[%{&ff}]'])
-"let g:airline_section_x = airline#section#create_right([])
-"let g:airline_section_y = '%y%m%r%=[%{(&fenc!=""?&fenc:&enc)}][%{&ff}]' "airline#section#create_right(['ffenc'])
-let g:airline_section_y = airline#section#create_right(['%{(&fenc!=""?&fenc:&enc)},%{&ff}'])
-"let g:airline_section_y = airline#section#create_right(['ffenc'])
-let g:airline_section_z = airline#section#create(['%(%l,%c%V%) %P'])
-let g:airline_section_warning = airline#section#create(['whitespace'])
-" tab setting
-"let g:airline#extensions#tabline#enabled = 1
 
-let g:airline_powerline_fonts = 1
-if !exists('g:airline_symbols')
-  let g:airline_symbols = {}
-endif
+function! MyReadonly()
+  return &ft !~? 'help\|vimfiler\|gundo' && &ro ? '[RO]' : ''
+endfunction
 
-" unicode symbols
-let g:airline_left_sep = '»'
-let g:airline_left_sep = '▶'
-let g:airline_right_sep = '«'
-let g:airline_right_sep = '◀'
-"let g:airline_symbols.linenr = '␊'
-"let g:airline_symbols.linenr = '␤'
-let g:airline_symbols.linenr = '¶'
-let g:airline_symbols.branch = '⎇'
-let g:airline_symbols.paste = 'ρ'
-"let g:airline_symbols.paste = 'Þ'
-"let g:airline_symbols.paste = '∥'
-let g:airline_symbols.whitespace = 'Ξ'
+function! MyFilename()
+  return ('' != MyReadonly() ? MyReadonly() . ' ' : '') .
+        \ (&ft == 'vimfiler' ? vimfiler#get_status_string() :
+        \  &ft == 'unite' ? unite#get_status_string() :
+        \  &ft == 'vimshell' ? substitute(b:vimshell.current_dir,expand('~'),'~','') :
+        \ '' != expand('%:t') ? expand('%:p') : '[No Name]') .
+        \ ('' != MyModified() ? ' ' . MyModified() : '')
+endfunction
 
-"https://github.com/bling/vim-airline#fine-tuned-configuration
-"function! AccentDemo()
-  "let keys = ['a','b','c','d','e','f','g','h']
-  "for k in keys
-    "call airline#parts#define_text(k, k)
-  "endfor
-  "call airline#parts#define_accent('a', 'red')
-  "call airline#parts#define_accent('b', 'green')
-  "call airline#parts#define_accent('c', 'blue')
-  "call airline#parts#define_accent('d', 'yellow')
-  "call airline#parts#define_accent('e', 'orange')
-  "call airline#parts#define_accent('f', 'purple')
-  "call airline#parts#define_accent('g', 'bold')
-  "call airline#parts#define_accent('h', 'italic')
-  "let g:airline_section_a = airline#section#create(keys)
-"endfunction
-"autocmd VimEnter * call AccentDemo()
-"" }}}
+function! MyInactiveFilename()
+  return ('' != MyReadonly() ? MyReadonly() . ' ' : '') .
+        \ (&ft == 'vimfiler' ? vimfiler#get_status_string() :
+        \  &ft == 'unite' ? unite#get_status_string() :
+        \  &ft == 'vimshell' ? substitute(b:vimshell.current_dir,expand('~'),'~','') :
+        \  &ft == 'nerdtree' ? 'NERDTree' :
+        \ '' != expand('%:t') ? expand('%:t') : '[No Name]') .
+        \ ('' != MyModified() ? ' ' . MyModified() : '')
+endfunction
+
+function! MyFugitive()
+  try
+    if expand('%:t') !~? 'Tagbar\|Gundo\|NERD' && &ft !~? 'vimfiler' && exists('*fugitive#head')
+      let mark = ''  " edit here for cool mark
+      let _ = fugitive#head()
+      return strlen(_) ? mark._ : ''
+    endif
+  catch
+  endtry
+  return ''
+endfunction
+
+function! MyFileformat()
+  return winwidth('.') > 70 ? &fileformat : ''
+endfunction
+
+function! MyFiletype()
+  return winwidth('.') > 70 ? (strlen(&filetype) ? &filetype : 'no ft') : ''
+endfunction
+
+function! MyFileencoding()
+  return winwidth('.') > 70 ? (strlen(&fenc) ? &fenc : &enc) : ''
+endfunction
+
+function! MyMode()
+  return winwidth('.') > 60 ? lightline#mode() : ''
+endfunction
+
+function! MyGitGutter()
+  if ! exists('*GitGutterGetHunkSummary')
+        \ || ! get(g:, 'gitgutter_enabled', 0)
+        \ || winwidth('.') <= 90
+    return ''
+  endif
+  let symbols = [
+        \ g:gitgutter_sign_added . ' ',
+        \ g:gitgutter_sign_modified . ' ',
+        \ g:gitgutter_sign_removed . ' '
+        \ ]
+  let hunks = GitGutterGetHunkSummary()
+  let ret = []
+  for i in [0, 1, 2]
+    if hunks[i] > 0
+      call add(ret, symbols[i] . hunks[i])
+    endif
+  endfor
+  return join(ret, ' ')
+endfunction
+
+" https://github.com/Lokaltog/vim-powerline/blob/develop/autoload/Powerline/Functions.vim
+function! MyCharCode()
+  if winwidth('.') <= 70
+    return ''
+  endif
+
+  " Get the output of :ascii
+  redir => ascii
+  silent! ascii
+  redir END
+
+  if match(ascii, 'NUL') != -1
+    return 'NUL'
+  endif
+
+  " Zero pad hex values
+  let nrformat = '0x%02x'
+
+  let encoding = (&fenc == '' ? &enc : &fenc)
+
+  if encoding == 'utf-8'
+    " Zero pad with 4 zeroes in unicode files
+    let nrformat = '0x%04x'
+  endif
+
+  " Get the character and the numeric value from the return value of :ascii
+  " This matches the two first pieces of the return value, e.g.
+  " "<F>  70" => char: 'F', nr: '70'
+  let [str, char, nr; rest] = matchlist(ascii, '\v\<(.{-1,})\>\s*([0-9]+)')
+
+  " Format the numeric value
+  let nr = printf(nrformat, nr)
+
+  return "'". char ."' ". nr
+endfunction
+" }}}
 
 "" {{{ CtrlP
 ""----------------------------------------------------
