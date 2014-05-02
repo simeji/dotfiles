@@ -830,6 +830,7 @@ let g:gitgutter_sign_removed = '✘'
 " lightline.vim {{{
 "----------------------------------------------------
 let g:lightline = {
+        \ 'colorscheme': 'wombat',
         \ 'mode_map': {'c': 'NORMAL'},
         \ 'active': {
         \   'left': [
@@ -842,11 +843,16 @@ let g:lightline = {
         \     ['charcode', 'fileformat', 'fileencoding', 'filetype'],
         \   ]
         \ },
+        \ 'inactive': {
+        \   'left': [['inactive_filename']],
+        \   'right': [['filetype']]
+        \ },
         \ 'component_function': {
         \   'modified': 'MyModified',
         \   'readonly': 'MyReadonly',
         \   'fugitive': 'MyFugitive',
         \   'filename': 'MyFilename',
+        \   'inactive_filename': 'MyInactiveFilename',
         \   'fileformat': 'MyFileformat',
         \   'filetype': 'MyFiletype',
         \   'fileencoding': 'MyFileencoding',
@@ -872,15 +878,26 @@ function! MyFilename()
         \ (&ft == 'vimfiler' ? vimfiler#get_status_string() :
         \  &ft == 'unite' ? unite#get_status_string() :
         \  &ft == 'vimshell' ? substitute(b:vimshell.current_dir,expand('~'),'~','') :
+        \ '' != expand('%:t') ? expand('%:p') : '[No Name]') .
+        \ ('' != MyModified() ? ' ' . MyModified() : '')
+endfunction
+
+function! MyInactiveFilename()
+  return ('' != MyReadonly() ? MyReadonly() . ' ' : '') .
+        \ (&ft == 'vimfiler' ? vimfiler#get_status_string() :
+        \  &ft == 'unite' ? unite#get_status_string() :
+        \  &ft == 'vimshell' ? substitute(b:vimshell.current_dir,expand('~'),'~','') :
+        \  &ft == 'nerdtree' ? 'NERDTree' :
         \ '' != expand('%:t') ? expand('%:t') : '[No Name]') .
         \ ('' != MyModified() ? ' ' . MyModified() : '')
 endfunction
 
 function! MyFugitive()
   try
-    if &ft !~? 'vimfiler\|gundo' && exists('*fugitive#head')
+    if expand('%:t') !~? 'Tagbar\|Gundo\|NERD' && &ft !~? 'vimfiler' && exists('*fugitive#head')
+      let mark = ''  " edit here for cool mark
       let _ = fugitive#head()
-      return strlen(_) ? '[b] '._ : ''
+      return strlen(_) ? mark._ : ''
     endif
   catch
   endtry
