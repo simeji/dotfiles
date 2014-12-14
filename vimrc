@@ -418,20 +418,15 @@ if v:version >= 700
 endif
 " }}}
 
-
-" {{{ NeoBundle Setting
-"---------------------------------------------------
+" {{{ NeoBundle Section
+" --------------------------------------------------
 if has('vim_starting')
   set nocompatible               " Be iMproved
   set runtimepath+=~/.vim/bundle/neobundle.vim/
 endif
 
-call neobundle#rc(expand('~/.vim/bundle/'))
-
-" Let NeoBundle manage NeoBundle
+call neobundle#begin(expand('~/.vim/bundle/'))
 NeoBundleFetch 'Shougo/neobundle.vim'
-" }}}
-
 
 " {{{ !!! VIM PLUGINS  !!! (managed by NeoBundle)
 "---------------------------------------------------
@@ -450,7 +445,7 @@ NeoBundle 'thinca/vim-quickrun.git'
 NeoBundle 'briancollins/vim-jst.git'
 NeoBundle 'itchyny/lightline.vim'
 NeoBundle 'airblade/vim-gitgutter'
-NeoBundle "kien/ctrlp.vim"
+"NeoBundle "kien/ctrlp.vim"
 NeoBundleLazy 'Shougo/unite-outline'
 NeoBundle 'Lokaltog/vim-easymotion'
 NeoBundleLazy 'osyo-manga/vim-reanimate', {
@@ -546,6 +541,9 @@ NeoBundle 'tpope/vim-fugitive'
 filetype plugin indent on
 " }}}
 
+call neobundle#end()
+
+" }}}
 
 " {{{ Vim plugin settings
 "---------------------------------------------------
@@ -980,18 +978,18 @@ endfunction
 
 "" {{{ CtrlP
 ""----------------------------------------------------
-let g:ctrlp_map = '<c-m>'
-
-let g:ctrlp_prompt_mappings = {
-    \ 'PrtSelectMove("j")':   ['<c-n>', '<down>'],
-    \ 'PrtSelectMove("k")':   ['<c-p>', '<up>'],
-    \ 'PrtHistory(-1)':       ['<c-h>'],
-    \ 'PrtHistory(1)':        ['<c-l>'],
-    \ 'PrtCurLeft()':         ['<left>', '<c-^>'],
-    \ 'PrtCurRight()':        ['<right>'],
-    \ 'AcceptSelection("e")': ['<c-o>'],
-    \ 'AcceptSelection("v")': ['<c-v>', '<cr>'],
-    \ }
+"let g:ctrlp_map = '<c-m>'
+"
+"let g:ctrlp_prompt_mappings = {
+"    \ 'PrtSelectMove("j")':   ['<c-n>', '<down>'],
+"    \ 'PrtSelectMove("k")':   ['<c-p>', '<up>'],
+"    \ 'PrtHistory(-1)':       ['<c-h>'],
+"    \ 'PrtHistory(1)':        ['<c-l>'],
+"    \ 'PrtCurLeft()':         ['<left>', '<c-^>'],
+"    \ 'PrtCurRight()':        ['<right>'],
+"    \ 'AcceptSelection("e")': ['<c-o>'],
+"    \ 'AcceptSelection("v")': ['<c-v>', '<cr>'],
+"    \ }
 " }}}
 
 
