@@ -541,6 +541,9 @@ NeoBundle 'tpope/vim-fugitive'
 filetype plugin indent on
 " }}}
 
+NeoBundle 'elzr/vim-json'
+NeoBundle 'simeji/vim-chatworker'
+NeoBundle 'vim-jp/vim-go-extra'
 call neobundle#end()
 
 " }}}
@@ -1011,6 +1014,12 @@ let g:EasyMotion_use_migemo = 1
 nmap <Leader>/ <Plug>(easymotion-sn)
 xmap <Leader>/ <Plug>(easymotion-sn)
 omap <Leader>/ <Plug>(easymotion-tn)
+" }}}
+
+" {{{ vim-json
+"----------------------------------------------------
+let g:vim_json_syntax_conceal = 0
+
 " }}}
 
 " {{{ Syntastic setting for Javascript JSLint
