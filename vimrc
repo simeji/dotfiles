@@ -107,11 +107,6 @@ set wrap
 highlight ZenkakuSpace cterm=underline ctermfg=lightblue guibg=darkgray
 match ZenkakuSpace /　/
 
-colorscheme Tomorrow-Night-Bright-Simeji
-" solarizedを使う場合
-"syntax enable
-"set background=dark
-"colorscheme solarized
 
 " ステータスラインに表示する情報の指定
 " airline利用のため外す
@@ -516,6 +511,7 @@ NeoBundleLazy 'kana/vim-operator-replace', {
 NeoBundleLazy 'kana/vim-textobj-user'
 NeoBundle 'altercation/vim-colors-solarized'
 NeoBundle 'jeffreyiacono/vim-colors-wombat'
+NeoBundle 'simeji/vim-tomorrow-night-bright-simeji-theme'
 NeoBundle 'nanotech/jellybeans.vim'
 
 function! s:meet_neocomplete_requirements()
@@ -544,6 +540,9 @@ filetype plugin indent on
 NeoBundle 'elzr/vim-json'
 NeoBundle 'simeji/vim-chatworker'
 NeoBundle 'vim-jp/vim-go-extra'
+NeoBundleLazy 'fatih/vim-go', {
+            \ 'autoload' : { 'filetypes' : 'go'  }
+            \ }
 call neobundle#end()
 
 " }}}
@@ -1016,6 +1015,13 @@ xmap <Leader>/ <Plug>(easymotion-sn)
 omap <Leader>/ <Plug>(easymotion-tn)
 " }}}
 
+" {{{ vim-go
+"----------------------------------------------------
+let g:go_highlight_functions = 1
+let g:go_highlight_methods = 1
+let g:go_highlight_structs = 1
+" }}}
+
 " {{{ vim-json
 "----------------------------------------------------
 let g:vim_json_syntax_conceal = 0
@@ -1030,6 +1036,16 @@ let g:vim_json_syntax_conceal = 0
 "  \ 'active_filetypes': ['javascript', 'json'],
 "  \ 'passive_filetypes': ['php'] }
 " }}}
+
+" {{{ カラースキームの設定
+"----------------------------------------------------
+"colorscheme Tomorrow-Night-Bright-Simeji
+" solarizedを使う場合
+"syntax enable
+"set background=dark
+"colorscheme solarized
+" }}}
+
 
 " {{{ 独自拡張を読み込む 独自拡張が優先させるため、このブロックは末尾に記載する事
 "----------------------------------------------------
