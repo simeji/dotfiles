@@ -543,6 +543,7 @@ NeoBundle 'vim-jp/vim-go-extra'
 NeoBundleLazy 'fatih/vim-go', {
             \ 'autoload' : { 'filetypes' : 'go'  }
             \ }
+NeoBundle 'kchmck/vim-coffee-script'
 call neobundle#end()
 
 " }}}
@@ -1027,6 +1028,25 @@ let g:go_highlight_structs = 1
 let g:vim_json_syntax_conceal = 0
 
 " }}}
+
+" {{{ vim-go
+"----------------------------------------------------
+let g:go_highlight_functions = 1
+let g:go_highlight_methods = 1
+let g:go_highlight_structs = 1
+" }}}
+
+" {{{ vim-coffee-script
+"----------------------------------------------------
+au BufRead,BufNewFile,BufReadPre *.coffee   set filetype=coffee
+" インデント設定
+autocmd FileType coffee   setlocal sw=2 sts=2 ts=2 et
+"保存と同時にコンパイルする
+autocmd BufWritePost *.coffee silent make!
+"エラーがあったら別ウィンドウで表示
+autocmd QuickFixCmdPost * nested cwindow | redraw!
+nnoremap <Leader>n :CoffeeCompile vert <CR><C-w>h
+"}}}
 
 " {{{ Syntastic setting for Javascript JSLint
 "----------------------------------------------------

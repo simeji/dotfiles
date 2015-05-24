@@ -160,7 +160,7 @@ setopt interactive_comments  # コマンドラインでも # 以降をコメン�
 
 # aliases
 alias ll="/bin/ls"
-alias ls="ll -al --show-control-chars --color=auto -F"
+alias ls="ls -al"
 alias jobs='jobs -l'
 alias sc='screen'
 
@@ -175,7 +175,7 @@ precmd() {
 builtin jobs | wc -l | read jobcount
 [ "x0" != "x$jobcount" ]      && jobcount=$jobcount       || jobcount=-
 [ "x"  != "x$SSH_AGENT_PID" ] && ssh_agent=$SSH_AGENT_PID || ssh_agent=-
-ip=`LANG=C /sbin/ifconfig eth0 | grep 'inet addr' | awk -F: '{print $2}' | awk '{print $1}'`
+ip=localhost
 PROMPT="$? $BLUE [$PURPLE$USER@$ip$BLUE] $GREEN%~$GRAY $HOSTNAME $GREEN
 %(!.#.$)%b $DEFAULT"               # 左表示
 RPROMPT="$YELLOW `hostname` $BLUE [$YELLOW$jobcount$BLUE:$YELLOW$ssh_agent$BLUE] `date "+%Y/%m/%d %H:%M"` $DEFAULT" # 右表示
