@@ -544,6 +544,7 @@ NeoBundleLazy 'fatih/vim-go', {
             \ 'autoload' : { 'filetypes' : 'go'  }
             \ }
 NeoBundle 'kchmck/vim-coffee-script'
+NeoBundle 'mxw/vim-jsx'
 call neobundle#end()
 
 " }}}
