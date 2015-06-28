@@ -84,7 +84,7 @@ unsetopt complete_aliases       # エイリアスには別の補完規則を適�
 unsetopt correct_all            # 引数についてもスペル修正を試みる(うっとおしい)
 autoload -U compinit; compinit  # zshの補完機能を利用する
 fignore=(CVS .svn)              # 補完対象外
-eval `dircolors ~/.dir_colors`                # 補完候補にも色付き表示
+#eval `dircolors ~/.dir_colors`                # 補完候補にも色付き表示
 zstyle ':completion:*:default' list-colors ${LS_COLORS}
 # 補完の時に大文字小文字を区別しない(但し、大文字を打った場合は小文字に変換しない)
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
@@ -175,7 +175,7 @@ precmd() {
 builtin jobs | wc -l | read jobcount
 [ "x0" != "x$jobcount" ]      && jobcount=$jobcount       || jobcount=-
 [ "x"  != "x$SSH_AGENT_PID" ] && ssh_agent=$SSH_AGENT_PID || ssh_agent=-
-ip=localhost
+ip="localhost"
 PROMPT="$? $BLUE [$PURPLE$USER@$ip$BLUE] $GREEN%~$GRAY $HOSTNAME $GREEN
 %(!.#.$)%b $DEFAULT"               # 左表示
 RPROMPT="$YELLOW `hostname` $BLUE [$YELLOW$jobcount$BLUE:$YELLOW$ssh_agent$BLUE] `date "+%Y/%m/%d %H:%M"` $DEFAULT" # 右表示
