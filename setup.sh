@@ -4,6 +4,7 @@
 
 vimdir="vim"
 vimrc="vimrc"
+gvimrc="gvimrc"
 screenrc="screenrc"
 tmuxconf="tmux.conf"
 zshrc="zshrc"
@@ -12,7 +13,7 @@ dircolors="dir_colors"
 
 dir="${HOME}/"
 
-targets=($vimdir $vimrc $tmuxconf $zshrc $gitconfig $dircolors)
+targets=($vimdir $vimrc $gvimrc $tmuxconf $zshrc $gitconfig $dircolors)
 
 # The function to make symbolic link
 # Arguments

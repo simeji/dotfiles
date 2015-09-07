@@ -269,6 +269,10 @@ au BufRead,BufNewFile *_spec.js set filetype=javascript.jstest
 "ejs シンタックスの設定
 au BufRead,BufNewFile *.ejs set filetype=jst
 let g:NERDCustomDelimiters = {'jst': { 'left': '<!-- ', 'right': ' -->' }}
+
+"go シンタックスの設定
+au Filetype gohtmltmpl set filetype=html.gohtmltmpl
+let g:NERDCustomDelimiters = {'gohtmltmpl': { 'left': '{{/* ', 'right': ' */}}' }}
 " }}}
 
 
@@ -545,6 +549,7 @@ NeoBundleLazy 'fatih/vim-go', {
             \ }
 NeoBundle 'kchmck/vim-coffee-script'
 NeoBundle 'mxw/vim-jsx'
+NeoBundleLazy 'kakkyz81/evervim'
 call neobundle#end()
 
 " }}}
@@ -1034,6 +1039,8 @@ let g:vim_json_syntax_conceal = 0
 let g:go_highlight_functions = 1
 let g:go_highlight_methods = 1
 let g:go_highlight_structs = 1
+let g:go_highlight_operators = 1
+let g:go_highlight_build_constraints = 1
 " }}}
 
 " {{{ vim-coffee-script
@@ -1048,6 +1055,14 @@ autocmd QuickFixCmdPost * nested cwindow | redraw!
 nnoremap <Leader>n :CoffeeCompile vert <CR><C-w>h
 "}}}
 
+" {{{ vim-coffee-script
+"----------------------------------------------------
+nnoremap <Leader>el :EvervimNotebookList<CR>
+nnoremap <Leader>es :EvervimSearchByQuery<Space>
+nnoremap <Leader>ec :EvervimCreateNote<CR>
+nnoremap <Leader>et :EvervimListTags<CR>
+" }}}
+"
 " {{{ Syntastic setting for Javascript JSLint
 "----------------------------------------------------
 "let g:syntastic_javascript_jslint_conf="--maxerr=400 --indent=2 --undef --nomen --regexp --plusplus --bitwise --newcap --sloppy --vars"
