@@ -429,14 +429,13 @@ NeoBundleFetch 'Shougo/neobundle.vim'
 
 " {{{ !!! VIM PLUGINS  !!! (managed by NeoBundle)
 "---------------------------------------------------
-NeoBundle 'unite-gem'
 NeoBundle 'unite-locate'
 NeoBundle 'unite-font'
 NeoBundle 'unite-colorscheme'
 NeoBundle 'pasela/unite-webcolorname.git'
 NeoBundle 'surround.vim'
 NeoBundle 'vcscommand.vim'
-NeoBundle 'jimsei/winresizer'
+NeoBundle 'simeji/winresizer'
 NeoBundle 'scrooloose/nerdcommenter.git'
 NeoBundle 'scrooloose/nerdtree.git'
 NeoBundle 'pangloss/vim-javascript.git'
@@ -444,7 +443,6 @@ NeoBundle 'thinca/vim-quickrun.git'
 NeoBundle 'briancollins/vim-jst.git'
 NeoBundle 'itchyny/lightline.vim'
 NeoBundle 'airblade/vim-gitgutter'
-"NeoBundle "kien/ctrlp.vim"
 NeoBundleLazy 'Shougo/unite-outline'
 NeoBundle 'Lokaltog/vim-easymotion'
 NeoBundleLazy 'osyo-manga/vim-reanimate', {
@@ -468,10 +466,6 @@ NeoBundleLazy 'Shougo/neosnippet.vim', {
 NeoBundleLazy 'vim-jp/vital.vim', {
       \ 'commands' : 'Vitalize',
       \ }
-NeoBundleLazy 'Shougo/junkfile.vim', {
-      \ 'commands' : 'JunkfileOpen',
-      \ 'unite_sources' : ['junkfile', 'junkfile/new'],
-      \ }
 
 NeoBundle 'Shougo/vimproc', {
       \ 'build' : {
@@ -487,22 +481,7 @@ NeoBundleLazy 'Shougo/unite.vim', {
       \ 'UniteWithCursorWord', 'UniteWithInput']
       \ }
 NeoBundleLazy 'Shougo/unite-build'
-NeoBundleLazy 'Shougo/unite-ssh', {
-      \ 'filetypes' : 'vimfiler',
-      \ }
 
-NeoBundleLazy 'ujihisa/vimshell-ssh', {
-      \ 'filetypes' : 'vimshell',
-      \ }
-
-NeoBundleLazy 'Shougo/vimshell.vim', {
-      \ 'commands' : [{ 'name' : 'VimShell',
-      \ 'complete' : 'customlist,vimshell#complete'},
-      \ 'VimShellExecute', 'VimShellInteractive',
-      \ 'VimShellCreate',
-      \ 'VimShellTerminal', 'VimShellPop'],
-      \ 'mappings' : '<Plug>(vimshell_'
-      \ }
 NeoBundle 'kana/vim-operator-user', {
       \ 'functions' : 'operator#user#define',
       \ }
@@ -536,8 +515,6 @@ else
 endif
 
 NeoBundle 'tpope/vim-fugitive'
-"NeoBundle 'scrooloose/syntastic.git'
-"NeoBundle 'rails.vim'
 filetype plugin indent on
 " }}}
 
@@ -600,7 +577,6 @@ if s:meet_neocomplete_requirements()
   " Define dictionary.
   let g:neocomplete#sources#dictionary#dictionaries = {
       \ 'default' : '',
-      \ 'vimshell' : $HOME.'/.vimshell_hist',
       \ 'scheme' : $HOME.'/.gosh_completions'
           \ }
 
@@ -619,37 +595,12 @@ if s:meet_neocomplete_requirements()
   inoremap <silent> <CR> <C-r>=<SID>my_cr_function()<CR>
   function! s:my_cr_function()
     return neocomplete#close_popup() . "\<CR>"
-    " For no inserting <CR> key.
-    "return pumvisible() ? neocomplete#close_popup() : "\<CR>"
   endfunction
-  " <TAB>: completion.
   inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
-  " <C-h>, <BS>: close popup and delete backword char.
   inoremap <expr><C-h> neocomplete#smart_close_popup()."\<C-h>"
   inoremap <expr><BS> neocomplete#smart_close_popup()."\<C-h>"
   inoremap <expr><C-y>  neocomplete#close_popup()
   inoremap <expr><C-e>  neocomplete#cancel_popup()
-  " Close popup by <Space>.
-  "inoremap <expr><Space> pumvisible() ? neocomplete#close_popup() : "\<Space>"
-
-  " For cursor moving in insert mode(Not recommended)
-  "inoremap <expr><Left>  neocomplete#close_popup() . "\<Left>"
-  "inoremap <expr><Right> neocomplete#close_popup() . "\<Right>"
-  "inoremap <expr><Up>    neocomplete#close_popup() . "\<Up>"
-  "inoremap <expr><Down>  neocomplete#close_popup() . "\<Down>"
-  " Or set this.
-  "let g:neocomplete#enable_cursor_hold_i = 1
-  " Or set this.
-  "let g:neocomplete#enable_insert_char_pre = 1
-
-  " AutoComplPop like behavior.
-  "let g:neocomplete#enable_auto_select = 1
-
-  " Shell like behavior(not recommended).
-  "set completeopt+=longest
-  "let g:neocomplete#enable_auto_select = 1
-  "let g:neocomplete#disable_auto_complete = 1
-  "inoremap <expr><TAB>  pumvisible() ? "\<Down>" : "\<C-x>\<C-u>"
 
   " Enable omni completion.
   autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
@@ -685,7 +636,6 @@ else
   " Define dictionary.
   let g:neocomplcache_dictionary_filetype_lists = {
       \ 'default' : '',
-      \ 'vimshell' : $HOME.'/.vimshell_hist',
       \ 'scheme' : $HOME.'/.gosh_completions'
       \ }
 
@@ -735,13 +685,6 @@ else
 
   " AutoComplPop like behavior.
   "let g:neocomplcache_enable_auto_select = 1
-
-  " Shell like behavior(not recommended).
-  "set completeopt+=longest
-  "let g:neocomplcache_enable_auto_select = 1
-  "let g:neocomplcache_disable_auto_complete = 1
-  "inoremap <expr><TAB>  pumvisible() ? "\<Down>" : "\<TAB>"
-  "inoremap <expr><CR>  neocomplcache#smart_close_popup() . "\<CR>"
 
   " Enable omni completion.
   autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
@@ -811,22 +754,6 @@ let $GEM_HOME = $HOME . "/dotfiles/gems"
 let g:ref_refe_cmd = $HOME . "/dotfiles/gems/bin/refe"
 " }}}
 
-" {{{ JunkFile.
-"----------------------------------------------------
-command! -nargs=0 JunkFile call s:open_junk_file()
-function! s:open_junk_file()
-  let l:junk_dir = $HOME . '/.vim_junk'. strftime('/%Y/%m')
-  if !isdirectory(l:junk_dir)
-    call mkdir(l:junk_dir, 'p')
-  endif
-
-  let l:filename = input('Junk Code: ', l:junk_dir.strftime('/%Y-%m-%d-%H%M%S.'))
-  if l:filename != ''
-    execute 'edit ' . l:filename
-  endif
-endfunction
-" }}}
-
 " {{{ vim-operator-replace
 "----------------------------------------------------
 "
@@ -890,7 +817,6 @@ function! MyFilename()
   return ('' != MyReadonly() ? MyReadonly() . ' ' : '') .
         \ (&ft == 'vimfiler' ? vimfiler#get_status_string() :
         \  &ft == 'unite' ? unite#get_status_string() :
-        \  &ft == 'vimshell' ? substitute(b:vimshell.current_dir,expand('~'),'~','') :
         \ '' != expand('%:t') ? expand('%:p') : '[No Name]') .
         \ ('' != MyModified() ? ' ' . MyModified() : '')
 endfunction
@@ -899,7 +825,6 @@ function! MyInactiveFilename()
   return ('' != MyReadonly() ? MyReadonly() . ' ' : '') .
         \ (&ft == 'vimfiler' ? vimfiler#get_status_string() :
         \  &ft == 'unite' ? unite#get_status_string() :
-        \  &ft == 'vimshell' ? substitute(b:vimshell.current_dir,expand('~'),'~','') :
         \  &ft == 'nerdtree' ? 'NERDTree' :
         \ '' != expand('%:t') ? expand('%:t') : '[No Name]') .
         \ ('' != MyModified() ? ' ' . MyModified() : '')
@@ -990,23 +915,6 @@ endfunction
   "return "'". char ."' ". nr
 "endfunction
 " }}}
-
-"" {{{ CtrlP
-""----------------------------------------------------
-"let g:ctrlp_map = '<c-m>'
-"
-"let g:ctrlp_prompt_mappings = {
-"    \ 'PrtSelectMove("j")':   ['<c-n>', '<down>'],
-"    \ 'PrtSelectMove("k")':   ['<c-p>', '<up>'],
-"    \ 'PrtHistory(-1)':       ['<c-h>'],
-"    \ 'PrtHistory(1)':        ['<c-l>'],
-"    \ 'PrtCurLeft()':         ['<left>', '<c-^>'],
-"    \ 'PrtCurRight()':        ['<right>'],
-"    \ 'AcceptSelection("e")': ['<c-o>'],
-"    \ 'AcceptSelection("v")': ['<c-v>', '<cr>'],
-"    \ }
-" }}}
-
 
 "" {{{ NERDTree
 ""----------------------------------------------------
