@@ -19,6 +19,3 @@
   d = diff
   a = add -p
   c = commit -v
-[user]
-	name = simeji
-	email = simeji.net@gmail.com
