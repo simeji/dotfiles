@@ -3,6 +3,13 @@ dotfiles
 
 manage dotfiles
 
+## Install with curl
+
+Please install `git` before you execute below.
+```
+curl -fsSL https://raw.githubusercontent.com/simeji/dotfiles/master/setup.sh | bash
+```
+
 ## Usage
 
 ### create dotfiles(make symlink)
