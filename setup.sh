@@ -2,6 +2,8 @@
 
 # Don't move this file
 
+repodir=""
+repo="https://github.com/simeji/dotfiles.git"
 vimdir="vim"
 vimrc="vimrc"
 gvimrc="gvimrc"
@@ -37,7 +39,7 @@ makeSymLink() {
 dotfiles() {
   for target in ${targets[@]}; do
     if [ $# = 0 ]; then
-      makeSymLink "${dir}.${target}" "/${target}"
+      makeSymLink "${dir}.${target}" "/${repodir}${target}"
     elif [ $1 = 'cleanup' -a -h "${dir}.${target}" ]; then
       rm -i $dir.$target
     fi
@@ -60,6 +62,25 @@ vimenv() {
   test -d ~/.vim/bundle/vundle || git clone https://github.com/Shougo/neobundle.vim ~/.vim/bundle/neobundle.vim
   vim ~/.vimrc -c NeoBundleInstall
 }
+
+clone_dotfiles() {
+  GIT=`which git`
+  $GIT clone $repo $HOME/dotfiles
+}
+
+if [ -z "$1" ]; then
+  echo -n "Check git command : "
+  if ! which git; then
+    echo "Please install git."
+    exit 1
+  fi
+  repodir="dotfiles/"
+  if [ -d $HOME/dotfiles ]; then
+    echo "$HOME/dotfiles is already exists."
+    exit 1
+  fi
+  clone_dotfiles && dotfiles && exit 0
+fi
 
 case "$1" in
 vimenv)
