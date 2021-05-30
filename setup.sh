@@ -12,10 +12,11 @@ tmuxconf="tmux.conf"
 zshrc="zshrc"
 gitconfig="gitconfig"
 dircolors="dir_colors"
+ideavimrc="ideavimrc"
 
 dir="${HOME}/"
 
-targets=($vimdir $vimrc $gvimrc $tmuxconf $zshrc $gitconfig $dircolors)
+targets=($vimdir $vimrc $gvimrc $tmuxconf $zshrc $gitconfig $dircolors $ideavimrc)
 
 # The function to make symbolic link
 # Arguments

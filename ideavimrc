@@ -1,0 +1,18 @@
+set easymotion
+" sで開始
+nmap s <Plug>(easymotion-s2)
+
+set surround
+set commentary
+
+set NERDTree
+nnoremap <C-j>w :NERDTreeFind<cr>
+
+" ヤンクでクリップボードにコピー
+set clipboard+=unnamed
+
+" 検索するときに大文字小文字を区別しない
+set ignorecase
+
+" 検索時に大文字を含んでいたら大/小を区別
+set smartcase
