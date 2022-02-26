@@ -20,3 +20,6 @@ set smartcase
 set hlsearch
 
 inoremap <c-[> <esc>
+
+set visualbell
+set noerrorbells
