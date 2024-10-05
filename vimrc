@@ -108,16 +108,6 @@ highlight ZenkakuSpace cterm=underline ctermfg=lightblue guibg=darkgray
 match ZenkakuSpace /　/
 
 
-" ステータスラインに表示する情報の指定
-" airline利用のため外す
-"set statusline=%n\:%y%F\ \|%{fugitive#statusline()}%{(&fenc!=''?&fenc:&enc).'\|'.&ff.'\|'}%m%r%=
-"set statusline=%n\:%y%F\ \|%{(&fenc!=''?&fenc:&enc).'\|'.&ff.'\|'}%m%r%=
-" ステータスラインの色
-"highlight StatusLine guifg=darkblue guibg=darkyellow gui=none ctermfg=blue ctermbg=yellow cterm=none
-"highlight statusline   term=NONE cterm=NONE guifg=red ctermfg=yellow ctermbg=red
-" }}}
-
-
 " {{{ インデント
 "----------------------------------------------------
 " オートインデントを有効にする
@@ -514,7 +504,6 @@ else
          \ }
 endif
 
-NeoBundle 'tpope/vim-fugitive'
 filetype plugin indent on
 " }}}
 
@@ -776,7 +765,7 @@ let g:lightline = {
         \ 'active': {
         \   'left': [
         \     ['mode', 'paste'],
-        \     ['fugitive', 'gitgutter', 'filename'],
+        \     ['gitgutter', 'filename'],
         \   ],
         \   'right': [
         \     ['lineinfo', 'syntastic'],
@@ -791,7 +780,6 @@ let g:lightline = {
         \ 'component_function': {
         \   'modified': 'MyModified',
         \   'readonly': 'MyReadonly',
-        \   'fugitive': 'MyFugitive',
         \   'filename': 'MyFilename',
         \   'inactive_filename': 'MyInactiveFilename',
         \   'fileformat': 'MyFileformat',
@@ -828,18 +816,6 @@ function! MyInactiveFilename()
         \  &ft == 'nerdtree' ? 'NERDTree' :
         \ '' != expand('%:t') ? expand('%:t') : '[No Name]') .
         \ ('' != MyModified() ? ' ' . MyModified() : '')
-endfunction
-
-function! MyFugitive()
-  try
-    if expand('%:t') !~? 'Tagbar\|Gundo\|NERD' && &ft !~? 'vimfiler' && exists('*fugitive#head')
-      let mark = ''  " edit here for cool mark
-      let _ = fugitive#head()
-      return strlen(_) ? mark._ : ''
-    endif
-  catch
-  endtry
-  return ''
 endfunction
 
 function! MyFileformat()
