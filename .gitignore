@@ -1,3 +1,4 @@
 vim/bundle
 gems/*
 vim/.netrwhist
+.DS_Store

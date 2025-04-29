@@ -107,6 +107,7 @@ set wrap
 highlight ZenkakuSpace cterm=underline ctermfg=lightblue guibg=darkgray
 match ZenkakuSpace /　/
 
+" }}}
 
 " {{{ インデント
 "----------------------------------------------------
@@ -136,69 +137,56 @@ set fileencodings=ucs-bom,euc-jp,cp932,iso-2022-jp
 set fileencodings+=,ucs-2le,ucs-2,utf-8
 
 if &encoding !=# 'utf-8'
-    set encoding=japan
-    set fileencoding=japan
+  set encoding=japan
+  set fileencoding=japan
 endif
 if has('iconv')
-    let s:enc_euc = 'euc-jp'
-    let s:enc_jis = 'iso-2022-jp'
-    if iconv("\x87\x64\x87\x6a", 'cp932', 'eucjp-ms') ==# "\xad\xc5\xad\xcb"
-        let s:enc_euc = 'eucjp-ms'
-        let s:enc_jis = 'iso-2022-jp-3'
-    elseif iconv("\x87\x64\x87\x6a", 'cp932', 'euc-jisx0213') ==# "\xad\xc5\xad\xcb"
-        let s:enc_euc = 'euc-jisx0213'
-        let s:enc_jis = 'iso-2022-jp-3'
-    endif
-    if &encoding ==# 'utf-8'
-        let s:fileencodings_default = &fileencodings
-        let &fileencodings = s:enc_jis .','. s:enc_euc .',cp932'
-        let &fileencodings = &fileencodings .','. s:fileencodings_default
-        unlet s:fileencodings_default
+  let s:enc_euc = 'euc-jp'
+  let s:enc_jis = 'iso-2022-jp'
+  if iconv("\x87\x64\x87\x6a", 'cp932', 'eucjp-ms') ==# "\xad\xc5\xad\xcb"
+    let s:enc_euc = 'eucjp-ms'
+    let s:enc_jis = 'iso-2022-jp-3'
+  elseif iconv("\x87\x64\x87\x6a", 'cp932', 'euc-jisx0213') ==# "\xad\xc5\xad\xcb"
+    let s:enc_euc = 'euc-jisx0213'
+    let s:enc_jis = 'iso-2022-jp-3'
+  endif
+  if &encoding ==# 'utf-8'
+    let s:fileencodings_default = &fileencodings
+    let &fileencodings = s:enc_jis .','. s:enc_euc .',cp932'
+    let &fileencodings = &fileencodings .','. s:fileencodings_default
+    unlet s:fileencodings_default
+  else
+    let &fileencodings = &fileencodings .','. s:enc_jis
+    set fileencodings+=utf-8,ucs-2le,ucs-2
+    if &encoding =~# '^\(euc-jp\|euc-jisx0213\|eucjp-ms\)$'
+      set fileencodings+=cp932
+      set fileencodings-=euc-jp
+      set fileencodings-=euc-jisx0213
+      set fileencodings-=eucjp-ms
+      let &encoding = s:enc_euc
+      let &fileencoding = s:enc_euc
     else
-        let &fileencodings = &fileencodings .','. s:enc_jis
-        set fileencodings+=utf-8,ucs-2le,ucs-2
-        if &encoding =~# '^\(euc-jp\|euc-jisx0213\|eucjp-ms\)$'
-            set fileencodings+=cp932
-            set fileencodings-=euc-jp
-            set fileencodings-=euc-jisx0213
-            set fileencodings-=eucjp-ms
-            let &encoding = s:enc_euc
-            let &fileencoding = s:enc_euc
-        else
-            let &fileencodings = &fileencodings .','. s:enc_euc
-        endif
+      let &fileencodings = &fileencodings .','. s:enc_euc
     endif
-    unlet s:enc_euc
-    unlet s:enc_jis
+  endif
+  unlet s:enc_euc
+  unlet s:enc_jis
 endif
 if has('autocmd')
-   function! AU_ReCheck_FENC()
-       if &fileencoding =~# 'iso-2022-jp' && search("[^\x01-\x7e]", 'n') == 0
-          let &fileencoding=&encoding
-       endif
-   endfunction
-   autocmd BufReadPost * call AU_ReCheck_FENC()
+  function! AU_ReCheck_FENC()
+    if &fileencoding =~# 'iso-2022-jp' && search("[^\x01-\x7e]", 'n') == 0
+      let &fileencoding=&encoding
+    endif
+  endfunction
+  autocmd BufReadPost * call AU_ReCheck_FENC()
 endif
 set fileformats=unix,dos,mac
 if exists('&ambiwidth')
-    set ambiwidth=double
+  set ambiwidth=double
 endif
 
 "svnの時はutf-8に文字コードを設定
 autocmd FileType svn :set fileencoding=utf-8
-" }}}
-
-
-" {{{ ctags
-"----------------------------------------------------
-" 同じ関数名があった場合、どれに飛ぶか選択できるようにする
-nnoremap <C-]> g<C-]>
-
-"taglist
-let Tlist_Ctags_Cmd = "/usr/bin/ctags"    "ctagsのパス
-let Tlist_Show_One_File = 1               "現在編集中のソースのタグしか表示しない
-let Tlist_Exit_OnlyWindow = 1             "taglistのウィンドーが最後のウィンドーならばVimを閉じる
-let Tlist_Use_Right_Window = 1            "taglistを右側で開く
 " }}}
 
 
@@ -212,10 +200,10 @@ inoremap <buffer> <S-TAB> <C-p>
 " {{{ オートコマンド
 "----------------------------------------------------
 if has("autocmd")
-    " ファイルタイプ別インデント、プラグインを有効にする
-    filetype plugin indent on
-    " カーソル位置を記憶する
-    autocmd BufReadPost *
+  " ファイルタイプ別インデント、プラグインを有効にする
+  filetype plugin indent on
+  " カーソル位置を記憶する
+  autocmd BufReadPost *
         \ if line("'\"") > 0 && line("'\"") <= line("$") |
         \   exe "normal g`\"" |
         \ endif
@@ -226,16 +214,16 @@ endif
 "" {{{ <TAB>で補完
 "----------------------------------------------------
 function! InsertTabWrapper()
-    let col = col('.') - 1
-    if !col || getline('.')[col - 1] !~ '\k'
-        return "\<TAB>"
+  let col = col('.') - 1
+  if !col || getline('.')[col - 1] !~ '\k'
+    return "\<TAB>"
+  else
+    if pumvisible()
+      return "\<C-N>"
     else
-        if pumvisible()
-            return "\<C-N>"
-        else
-            return "\<C-N>\<C-P>"
-        end
-    endif
+      return "\<C-N>\<C-P>"
+    end
+  endif
 endfunction
 inoremap <tab> <c-r>=InsertTabWrapper()<cr>
 "}}}
@@ -272,107 +260,15 @@ nnoremap <C-n> gt
 nnoremap <C-p> gT
 
 if v:version >= 700
-    nnoremap <C-g> :call OpenNewTab()<CR>
-    function! OpenNewTab()
-        let f = expand("%:p")
-        execute ":q"
-        execute ":tabnew ".f
-    endfunction
+  nnoremap <C-g> :call OpenNewTab()<CR>
+  function! OpenNewTab()
+    let f = expand("%:p")
+    execute ":q"
+    execute ":tabnew ".f
+  endfunction
 endif
 
 nnoremap <Space>s. :<C-u>source $HOME/.vimrc<CR>
-" }}}
-
-
-" {{{ VCSDiff拡張 VCSDiffPast
-"-----------------------------------------------
-"svnでいくつ前のリビジョンかを指定して比較を行なう
-"listオプションを指定すれば一覧から選択形式で比較できる
-"
-"※HEADリビジョンを1としている
-"
-">>>>>>>>>>>>>>>>>> 使い方 <<<<<<<<<<<<<<<<<
-"
-"調べたいファイルをアクティブにして
-"コマンドモードで下記コマンドを実行する
-"
-":VCSDiffPast [-list] number
-"# [-list] はオプション(省略可)
-"# VCSDiff形式で比較
-"# number はHEADリビジョンを1としている
-"
-":VCSVimDiffPast [-list] number
-"# [-list] は一覧表示オプション(省略可)
-"# VCSVimDiff形式で比較
-"# number はHEADリビジョンを1としている
-"
-"
-">>>>>>>>>>>>>>>>>>> 例 <<<<<<<<<<<<<<<<<<<<
-"
-":VCSDiffPast 1
-"#最新バージョンのソースとVCSDiffで比較
-"#普通のVCSDiffと同じ
-"
-":VCSDiffPast 2
-"#最新バージョン前のバージョンのソースとVCSDiffで比較
-"
-":VCSDiffPast -list 20
-"#過去、20バージョンのリビジョン番号とコミッタ、日時を
-"#リスト形式で表示して、選択されたものと差異をVCSDiffで比較
-"
-":VCSVimDiffPast 1
-"#最新バージョンのソースとVCSVimDiffで比較
-"#普通のVCSVimDiffと同じ
-"
-":VCSVimDiffPast 3
-"#最新バージョン前の前のソースとVCSVimDiffで比較
-"
-":VCSVimDiffPast -list 15
-"#過去、15バージョンのリビジョン番号とコミッタ、日時を
-"#リスト形式で表示して、選択したものとの差異をVCSDiffで比較
-"
-"-----------------------------------------------
-com! -nargs=* VCSDiffPast call VCSDiffPast(<f-args>)
-com! -nargs=* VCSVimDiffPast call VCSVimDiffPast(<f-args>)
-
-function! VCSDiffPast(n,...)
-    if a:0 > 0 && a:n == "-list"
-        let rev = GetPastRevisionByList(a:1)
-    else
-        let rev = GetPastRevision(a:n)
-    endif
-    execute ":VCSDiff ".rev
-endfunction
-
-function! VCSVimDiffPast(n,...)
-    if a:0 > 0 && a:n == "-list"
-        let rev = GetPastRevisionByList(a:1)
-    else
-        let rev = GetPastRevision(a:n)
-    endif
-    execute ":VCSVimDiff ".rev
-endfunction
-
-function! GetPastRevision(n)
-    let f = expand("%:p")
-    let rev = system("svn log -q --limit ".a:n." ".f." |awk '$2{print $1}' | awk -v ORS='' 'NR==".a:n."{print $1}'")
-    return rev
-endfunction
-
-function! GetPastRevisionByList(n)
-    let f = expand("%:p")
-    let num = a:n < 1 ? 10 : a:n
-    let rev = system("svn log -q --limit ".num." ".f." |awk '$2{print $1 \" \" $3 \" \" $5}' | awk -v ORS=',' '{print NR-1\": \"$1\" \"$2\" \"$3}'")
-    let lines = split(rev,',')
-    let choice = inputlist(lines)
-    if choice >= 0 && choice < len(lines)
-        let r = split(lines[choice],' ')[1]
-    else
-        echo "どれかを選択してください"
-        let r = 0
-    endif
-    return r
-endfunction
 " }}}
 
 
@@ -387,142 +283,98 @@ vnoremap <C-J> :m '>+1<CR>v '<
 "---------------------------------------------------
 if v:version >= 700
 
-    function! TabLine()
-        let res = ''
-        let curtab = tabpagenr()
-        let i = 1
-        for i in range(1, tabpagenr('$'))
-            let res .= ((i == curtab) ? '%#TabLineSel#' : '%#TabLine#')
-            let res .= i . '-' . tabpagewinnr(i, '$') . ':'
-            let res .= substitute(bufname(tabpagebuflist(i)[0]), '.\+\/', '', 'g')
-            let res .= ' '
-            let i += 1
-            exe | endfor
-        let res .= '%#TabLineFill#'
-        return res
-    endfunction
+  function! TabLine()
+    let res = ''
+    let curtab = tabpagenr()
+    let i = 1
+    for i in range(1, tabpagenr('$'))
+      let res .= ((i == curtab) ? '%#TabLineSel#' : '%#TabLine#')
+      let res .= i . '-' . tabpagewinnr(i, '$') . ':'
+      let res .= substitute(bufname(tabpagebuflist(i)[0]), '.\+\/', '', 'g')
+      let res .= ' '
+      let i += 1
+      exe | endfor
+      let res .= '%#TabLineFill#'
+      return res
+  endfunction
 
-    set tabline=%!TabLine()
+  set tabline=%!TabLine()
 
 endif
 " }}}
 
-" {{{ NeoBundle Section
-" --------------------------------------------------
-if has('vim_starting')
-  set nocompatible               " Be iMproved
-  set runtimepath+=~/.vim/bundle/neobundle.vim/
-endif
 
-call neobundle#begin(expand('~/.vim/bundle/'))
-NeoBundleFetch 'Shougo/neobundle.vim'
 
-" {{{ !!! VIM PLUGINS  !!! (managed by NeoBundle)
-"---------------------------------------------------
-NeoBundle 'unite-locate'
-NeoBundle 'unite-font'
-NeoBundle 'unite-colorscheme'
-NeoBundle 'pasela/unite-webcolorname.git'
-NeoBundle 'surround.vim'
-NeoBundle 'vcscommand.vim'
-NeoBundle 'simeji/winresizer'
-NeoBundle 'scrooloose/nerdcommenter.git'
-NeoBundle 'scrooloose/nerdtree.git'
-NeoBundle 'pangloss/vim-javascript.git'
-NeoBundle 'thinca/vim-quickrun.git'
-NeoBundle 'briancollins/vim-jst.git'
-NeoBundle 'itchyny/lightline.vim'
-NeoBundle 'airblade/vim-gitgutter'
-NeoBundleLazy 'Shougo/unite-outline'
-NeoBundle 'Lokaltog/vim-easymotion'
-NeoBundleLazy 'osyo-manga/vim-reanimate', {
-      \ 'autoload' : {
-      \ 'commands' : ['ReanimateLoad', 'ReanimateSave' ]
-      \ }}
-NeoBundle 'thinca/vim-ref', {
-      \ 'commands' : 'Ref',
-      \ 'unite_sources' : 'ref',
-      \ }
-NeoBundleLazy 'thinca/vim-unite-history', {
-      \ 'unite_sources' : ['history/command', 'history/search']
-      \ }
-NeoBundleLazy 'Shougo/neosnippet.vim', {
-      \ 'depends' : ['Shougo/neosnippet-snippets'],
-      \ 'insert' : 1,
-      \ 'filetypes' : 'snippet',
-      \ 'unite_sources' : [
-      \ 'neosnippet', 'neosnippet/user', 'neosnippet/runtime'],
-      \ }
-NeoBundleLazy 'vim-jp/vital.vim', {
-      \ 'commands' : 'Vitalize',
-      \ }
-
-NeoBundle 'Shougo/vimproc', {
-      \ 'build' : {
-      \     'windows' : 'make -f make_mingw32.mak',
-      \     'cygwin' : 'make -f make_cygwin.mak',
-      \     'mac' : 'make -f make_mac.mak',
-      \     'unix' : 'make -f make_unix.mak',
-      \    },
-      \ }
-NeoBundleLazy 'Shougo/unite.vim', {
-      \ 'commands' : [{ 'name' : 'Unite',
-      \ 'complete' : 'customlist,unite#complete_source'},
-      \ 'UniteWithCursorWord', 'UniteWithInput']
-      \ }
-NeoBundleLazy 'Shougo/unite-build'
-
-NeoBundle 'kana/vim-operator-user', {
-      \ 'functions' : 'operator#user#define',
-      \ }
-NeoBundleLazy 'kana/vim-operator-replace', {
-      \ 'depends' : 'vim-operator-user',
-      \ 'autoload' : {
-      \ 'mappings' : [
-      \ ['nx', '<Plug>(operator-replace)']]
-      \ }}
-NeoBundleLazy 'kana/vim-textobj-user'
-NeoBundle 'altercation/vim-colors-solarized'
-NeoBundle 'jeffreyiacono/vim-colors-wombat'
-NeoBundle 'simeji/vim-tomorrow-night-bright-simeji-theme'
-NeoBundle 'nanotech/jellybeans.vim'
-
-function! s:meet_neocomplete_requirements()
-    return has('lua') && (v:version > 703 || (v:version == 703 && has('patch885')))
-endfunction
-
-if s:meet_neocomplete_requirements()
-    NeoBundleLazy 'Shougo/neocomplete.vim', {
-        \ 'depends' : 'Shougo/context_filetype.vim',
-        \ 'insert' : 1
-        \ }
-    NeoBundleFetch 'Shougo/neocomplcache.vim'
-else
-    NeoBundleFetch 'Shougo/neocomplete.vim'
-    NeoBundle 'Shougo/neocomplcache.vim', {
-         \ 'insert' : 1
-         \ }
-endif
-
-filetype plugin indent on
-" }}}
-
-NeoBundle 'elzr/vim-json'
-NeoBundle 'simeji/vim-chatworker'
-NeoBundle 'vim-jp/vim-go-extra'
-NeoBundleLazy 'fatih/vim-go', {
-            \ 'autoload' : { 'filetypes' : 'go'  }
-            \ }
-NeoBundle 'kchmck/vim-coffee-script'
-NeoBundle 'mxw/vim-jsx'
-NeoBundleLazy 'kakkyz81/evervim'
-call neobundle#end()
-
-" }}}
 
 " {{{ Vim plugin settings
 "---------------------------------------------------
 "
+" {{{ denops.vim
+
+let g:denops#deno = $HOME . '/.deno/bin/deno'
+const s:denops_src = $HOME .'/.cache/dpp/repos/github.com/vim-denops/denops.vim/'
+const s:denops_hello_src = $HOME .'/.cache/dpp/repos/github.com/vim-denops/denops-helloworld.vim/'
+execute 'set runtimepath^=' .. s:denops_src
+execute 'set runtimepath^=' .. s:denops_hello_src
+
+" }}}
+
+" {{{ dein.vim
+
+set nocompatible
+
+const s:dein_base = expand('~/.cache/dein')
+const s:dein_repo = s:dein_base . '/repos/github.com/Shougo/dein.vim'
+" runtimepath に追加（末尾のスラッシュを除去）
+execute 'set runtimepath+=' .  fnamemodify(s:dein_repo, ':p')->substitute('[/\\]\\+$', '', '')
+
+
+if dein#load_state(s:dein_base)
+  " dein 初期化とプラグイン登録
+  call dein#begin(s:dein_base)
+
+  " ここに他プラグインを追加
+  "call dein#add('author/plugin', { 'on_cmd': ['Cmd'] })
+  "
+  " dein.vim
+  call dein#add('Shougo/dein.vim')
+  " denops.vim （v7.0+ が必要）
+  call dein#add('vim-denops/denops.vim')
+  " dpp.vim 本体（Vim9.1.0448+ / Neovim0.10.0+ が必要）
+  call dein#add('Shougo/dpp.vim')
+  " リモートプラグイン導入用エクステンション
+  call dein#add('Shougo/dpp-ext-installer', { 'on_cmd': ['DppInstallExt'] })
+  " Language Server Protocol (vim-lsp)
+  call dein#add('prabirshrestha/vim-lsp')
+  " Automatic LSP server installer for vim-lsp
+  call dein#add('mattn/vim-lsp-settings')
+  " Surround text objects (parentheses, quotes, tags, etc.)
+  call dein#add('tpope/vim-surround')
+  " Easy window resizing with hjkl keys
+  call dein#add('simeji/winresizer')
+  " File system explorer
+  call dein#add('scrooloose/nerdtree')
+  " Fast-motion plugin
+  call dein#add('Lokaltog/vim-easymotion')
+
+  call dein#end()
+  call dein#save_state()
+
+endif
+
+" 自動インストール
+if dein#check_install()
+  call dein#install()
+endif
+" Ex コマンド定義（任意）
+"command! DppInstallExt call dpp#async_ext_action('installer', 'install')
+
+" ファイルタイプ検出・インデント・シンタックス有効化
+filetype plugin indent on
+syntax enable
+" }}}
+
+
 " {{{ Unite Setting
 "---------------------------------------------------
 let g:unite_enable_start_insert = 1
@@ -549,156 +401,6 @@ autocmd FileType python nnoremap <silent><buffer> [unite]t :<C-u>Unite -default-
 autocmd FileType perl nnoremap <silent><buffer> [unite]t :<C-u>Unite -default-action=vsplit ref/perldoc<CR>
 " }}}
 
-" {{{ neocomplcache or neocomplete setting
-"---------------------------------------------------
-" Disable AutoComplPop.
-let g:acp_enableAtStartup = 0
-
-if s:meet_neocomplete_requirements()
-  " Use neocomplete.
-  let g:neocomplete#enable_at_startup = 1
-  " Use smartcase.
-  let g:neocomplete#enable_smart_case = 1
-  " Set minimum syntax keyword length.
-  let g:neocomplete#sources#syntax#min_keyword_length = 3
-  let g:neocomplete#lock_buffer_name_pattern = '\*ku\*'
-
-  " Define dictionary.
-  let g:neocomplete#sources#dictionary#dictionaries = {
-      \ 'default' : '',
-      \ 'scheme' : $HOME.'/.gosh_completions'
-          \ }
-
-  " Define keyword.
-  if !exists('g:neocomplete#keyword_patterns')
-      let g:neocomplete#keyword_patterns = {}
-  endif
-  let g:neocomplete#keyword_patterns['default'] = '\h\w*'
-
-  " Plugin key-mappings.
-  inoremap <expr><C-g>     neocomplete#undo_completion()
-  inoremap <expr><C-l>     neocomplete#complete_common_string()
-
-  " Recommended key-mappings.
-  " <CR>: close popup and save indent.
-  inoremap <silent> <CR> <C-r>=<SID>my_cr_function()<CR>
-  function! s:my_cr_function()
-    return neocomplete#close_popup() . "\<CR>"
-  endfunction
-  inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
-  inoremap <expr><C-h> neocomplete#smart_close_popup()."\<C-h>"
-  inoremap <expr><BS> neocomplete#smart_close_popup()."\<C-h>"
-  inoremap <expr><C-y>  neocomplete#close_popup()
-  inoremap <expr><C-e>  neocomplete#cancel_popup()
-
-  " Enable omni completion.
-  autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
-  autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
-  autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
-  autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
-  autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
-
-  " Enable heavy omni completion.
-  if !exists('g:neocomplete#sources#omni#input_patterns')
-    let g:neocomplete#sources#omni#input_patterns = {}
-  endif
-  "let g:neocomplete#sources#omni#input_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
-  "let g:neocomplete#sources#omni#input_patterns.c = '[^.[:digit:] *\t]\%(\.\|->\)'
-  "let g:neocomplete#sources#omni#input_patterns.cpp = '[^.[:digit:] *\t]\%(\.\|->\)\|\h\w*::'
-
-  " For perlomni.vim setting.
-  " https://github.com/c9s/perlomni.vim
-  let g:neocomplete#sources#omni#input_patterns.perl = '\h\w*->\h\w*\|\h\w*::'
-else
-  " Use neocomplcache.
-  let g:neocomplcache_enable_at_startup = 1
-  " Use smartcase.
-  let g:neocomplcache_enable_smart_case = 1
-  " Use camel case completion.
-  let g:neocomplcache_enable_camel_case_completion = 1
-  " Use underbar completion.
-  let g:neocomplcache_enable_underbar_completion = 1
-  " Set minimum syntax keyword length.
-  let g:neocomplcache_min_syntax_length = 3
-  let g:neocomplcache_lock_buffer_name_pattern = '\*ku\*'
-
-  " Define dictionary.
-  let g:neocomplcache_dictionary_filetype_lists = {
-      \ 'default' : '',
-      \ 'scheme' : $HOME.'/.gosh_completions'
-      \ }
-
-  " Define keyword.
-  if !exists('g:neocomplcache_keyword_patterns')
-    let g:neocomplcache_keyword_patterns = {}
-  endif
-  let g:neocomplcache_keyword_patterns['default'] = '\h\w*'
-
-  " Plugin key-mappings.
-" Plugin key-mappings.
-  imap <C-k>     <Plug>(neosnippet_expand_or_jump)
-  smap <C-k>     <Plug>(neosnippet_expand_or_jump)
-  xmap <C-k>     <Plug>(neosnippet_expand_target)
-  "SuperTab like snippets behavior.
-  imap <expr><TAB> neosnippet#expandable_or_jumpable() ?
-  \ "\<Plug>(neosnippet_expand_or_jump)"
-  \: pumvisible() ? "\<C-n>" : "\<TAB>"
-  smap <expr><TAB> neosnippet#expandable_or_jumpable() ?
-  \ "\<Plug>(neosnippet_expand_or_jump)"
-  \: "\<TAB>"
-
-  " For snippet_complete marker.
-  if has('conceal')
-    set conceallevel=2 concealcursor=i
-  endif
-
-  inoremap <expr><C-g>     neocomplcache#undo_completion()
-  inoremap <expr><C-l>     neocomplcache#complete_common_string()
-
-  " Unite Snip
-  imap <C-s>  <Plug>(neosnippet_start_unite_snippet)
-
-  " SuperTab like snippets behavior.
-  "imap <expr><TAB> neocomplcache#sources#snippets_complete#expandable() ? "\<Plug>(neocomplcache_snippets_expand)" : pumvisible() ? "\<C-n>" : "\<TAB>"
-
-  " Recommended key-mappings.
-  " <CR>: close popup and save indent.
-  inoremap <expr><CR>  neocomplcache#smart_close_popup() . "\<CR>"
-  " <TAB>: completion.
-  inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
-  " <C-h>, <BS>: close popup and delete backword char.
-  inoremap <expr><C-h> neocomplcache#smart_close_popup()."\<C-h>"
-  inoremap <expr><BS> neocomplcache#smart_close_popup()."\<C-h>"
-  inoremap <expr><C-y>  neocomplcache#close_popup()
-  inoremap <expr><C-e>  neocomplcache#cancel_popup()
-
-  " AutoComplPop like behavior.
-  "let g:neocomplcache_enable_auto_select = 1
-
-  " Enable omni completion.
-  autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
-  autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
-  autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
-  autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
-  autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
-
-  " Enable heavy omni completion.
-  if !exists('g:neocomplcache_omni_patterns')
-    let g:neocomplcache_omni_patterns = {}
-  endif
-  "let g:neocomplcache_omni_patterns.ruby = '[^. *\t]\.\w*\|\h\w*::'
-  "autocmd FileType ruby setlocal omnifunc=rubycomplete#Complete
-  let g:neocomplcache_omni_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
-  let g:neocomplcache_omni_patterns.c = '\%(\.\|->\)\h\w*'
-  let g:neocomplcache_omni_patterns.cpp = '\h\w*\%(\.\|->\)\h\w*\|\h\w*::'
-
-  " plugin rank
-  if !exists('g:neocomplcache_plugin_rank')
-    let g:neocomplcache_plugin_rank = {}
-  endif
-  let g:neocomplcache_plugin_rank.buffer_complete = 90
-endif
-" }}}
 
 " {{{ winresizer
 "----------------------------------------------------
@@ -706,6 +408,39 @@ let g:winresizer_enable = 1
 let g:winresizer_start_key = '<C-E>'
 " }}}
 
+
+" {{{ vim-lsp
+"function! s:onLspBufferEnabled() abort
+"  setlocal omnifunc=lsp#complete
+"  setlocal signcolumn=yes
+"  if exists('+tagfunc') | setlocal tagfunc=lsp#tagfunc | endif
+"
+"  nnoremap <buffer> gd <plug>(lsp-definition)
+"  nnoremap <buffer> gs <plug>(lsp-document-symbol-search)
+"  nnoremap <buffer> gS <plug>(lsp-workspace-symbol-search)
+"  nnoremap <buffer> gr <plug>(lsp-references)
+"  nnoremap <buffer> gi <plug>(lsp-implementation)
+"  nnoremap <buffer> gt <plug>(lsp-type-definition)
+"  nnoremap <buffer> gn <plug>(lsp-rename)
+"  nnoremap <buffer> [g <plug>(lsp-previous-diagnostic)
+"  nnoremap <buffer> ]g <plug>(lsp-next-diagnostic)
+"  nnoremap <buffer> K <plug>(lsp-hover)
+"  nnoremap <buffer> <C-l>d <Cmd>rightbelow LspDefinition<CR>
+"
+"  let g:lsp_format_sync_timeout = 1000
+"endfunction
+"
+"augroup lsp_install
+"  au!
+"  autocmd User lsp_buffer_enabled call s:onLspBufferEnabled()
+"augroup END
+"
+"" vim-lsp-settins
+"let g:lsp_settings_filetype_javascript = ['typescript-language-server']
+"let g:lsp_settings_filetype_javascriptreact = ['typescript-language-server']
+"let g:lsp_settings_filetype_typescript = ['typescript-language-server']
+"let g:lsp_settings_filetype_typescriptreact = ['typescript-language-server']
+" }}}
 
 " {{{ quickrun
 "----------------------------------------------------
@@ -760,38 +495,38 @@ let g:gitgutter_sign_removed = '✘'
 " lightline.vim {{{
 "----------------------------------------------------
 let g:lightline = {
-        \ 'colorscheme': 'wombat',
-        \ 'mode_map': {'c': 'NORMAL'},
-        \ 'active': {
-        \   'left': [
-        \     ['mode', 'paste'],
-        \     ['gitgutter', 'filename'],
-        \   ],
-        \   'right': [
-        \     ['lineinfo', 'syntastic'],
-        \     ['filetype'],
-        \     ['fileformat', 'fileencoding'],
-        \   ]
-        \ },
-        \ 'inactive': {
-        \   'left': [['inactive_filename']],
-        \   'right': [['filetype']]
-        \ },
-        \ 'component_function': {
-        \   'modified': 'MyModified',
-        \   'readonly': 'MyReadonly',
-        \   'filename': 'MyFilename',
-        \   'inactive_filename': 'MyInactiveFilename',
-        \   'fileformat': 'MyFileformat',
-        \   'filetype': 'MyFiletype',
-        \   'fileencoding': 'MyFileencoding',
-        \   'mode': 'MyMode',
-        \   'syntastic': 'SyntasticStatuslineFlag',
-        \   'gitgutter': 'MyGitGutter',
-        \ },
-        \ 'separator': {'left': '｜', 'right': '｜'},
-        \ 'subseparator': {'left': '｜', 'right': '｜'}
-        \ }
+      \ 'colorscheme': 'wombat',
+      \ 'mode_map': {'c': 'NORMAL'},
+      \ 'active': {
+      \   'left': [
+      \     ['mode', 'paste'],
+      \     ['gitgutter', 'filename'],
+      \   ],
+      \   'right': [
+      \     ['lineinfo', 'syntastic'],
+      \     ['filetype'],
+      \     ['fileformat', 'fileencoding'],
+      \   ]
+      \ },
+      \ 'inactive': {
+      \   'left': [['inactive_filename']],
+      \   'right': [['filetype']]
+      \ },
+      \ 'component_function': {
+      \   'modified': 'MyModified',
+      \   'readonly': 'MyReadonly',
+      \   'filename': 'MyFilename',
+      \   'inactive_filename': 'MyInactiveFilename',
+      \   'fileformat': 'MyFileformat',
+      \   'filetype': 'MyFiletype',
+      \   'fileencoding': 'MyFileencoding',
+      \   'mode': 'MyMode',
+      \   'syntastic': 'SyntasticStatuslineFlag',
+      \   'gitgutter': 'MyGitGutter',
+      \ },
+      \ 'separator': {'left': '｜', 'right': '｜'},
+      \ 'subseparator': {'left': '｜', 'right': '｜'}
+      \ }
 
 function! MyModified()
   return &ft =~ 'help\|vimfiler\|gundo' ? '' : &modified ? '+' : &modifiable ? '' : '-'
@@ -857,38 +592,38 @@ endfunction
 
 " https://github.com/Lokaltog/vim-powerline/blob/develop/autoload/Powerline/Functions.vim
 "function! MyCharCode()
-  "if winwidth('.') <= 70
-    "return ''
-  "endif
+"if winwidth('.') <= 70
+"return ''
+"endif
 
-  "" Get the output of :ascii
-  "redir => ascii
-  "silent! ascii
-  "redir END
+"" Get the output of :ascii
+"redir => ascii
+"silent! ascii
+"redir END
 
-  "if match(ascii, 'NUL') != -1
-    "return 'NUL'
-  "endif
+"if match(ascii, 'NUL') != -1
+"return 'NUL'
+"endif
 
-  "" Zero pad hex values
-  "let nrformat = '0x%02x'
+"" Zero pad hex values
+"let nrformat = '0x%02x'
 
-  "let encoding = (&fenc == '' ? &enc : &fenc)
+"let encoding = (&fenc == '' ? &enc : &fenc)
 
-  "if encoding == 'utf-8'
-    "" Zero pad with 4 zeroes in unicode files
-    "let nrformat = '0x%04x'
-  "endif
+"if encoding == 'utf-8'
+"" Zero pad with 4 zeroes in unicode files
+"let nrformat = '0x%04x'
+"endif
 
-  "" Get the character and the numeric value from the return value of :ascii
-  "" This matches the two first pieces of the return value, e.g.
-  "" "<F>  70" => char: 'F', nr: '70'
-  "let [str, char, nr; rest] = matchlist(ascii, '\v\<(.{-1,})\>\s*([0-9]+)')
+"" Get the character and the numeric value from the return value of :ascii
+"" This matches the two first pieces of the return value, e.g.
+"" "<F>  70" => char: 'F', nr: '70'
+"let [str, char, nr; rest] = matchlist(ascii, '\v\<(.{-1,})\>\s*([0-9]+)')
 
-  "" Format the numeric value
-  "let nr = printf(nrformat, nr)
+"" Format the numeric value
+"let nr = printf(nrformat, nr)
 
-  "return "'". char ."' ". nr
+"return "'". char ."' ". nr
 "endfunction
 " }}}
 
